@@ -1,0 +1,18 @@
+CICLO:
+    MOV PORTD, W0
+    NOP
+    MOV 0XF, W1
+    AND W0, W1, W0
+    CP W0, #0
+    BRA Z, DIGITO_O
+    CP W0, #1
+    BRA Z, DIGITO_1
+    CP W0, #2
+    BRA Z, DIGITO_2
+    GOTO CICLO
+
+DIGITO_0:
+    MOV #0X6D, W0
+    MOV W0, PORTB
+    NOP
+    GOTO CICLO
