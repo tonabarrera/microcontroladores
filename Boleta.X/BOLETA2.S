@@ -1,25 +1,12 @@
-;/**@brief ESTE PROGRAMA MUESTRA UN NUMERO DE BOLETA 2015...EN UN 
-; * DISPLAY DE 7 SEGMENTOS DE ANODO COMUN CONECTADO EN EL PUERTO B 
-; * (RB6, ..., RB0). LOS CODIGOS DE CADA DIGITO ES COLOCADO EN 
-; * MEMORIA DE PROGRAMA MEDIANTE UN ARREGLO Y ACCESADO USANDO LA 
-; * INSTRUCCION TBLRDL.B
-; *	    A
-; *	---------
-; *   F|	 |B
-; *    |    G	 |
-; *	---------
-; *   E|	 |C
-; *    |    	 |
-; *	---------
-; *	    D	
-; * RB6-A RB5-B RB4-C RB3-D RB2-E RB1-F RB0-G CODIGO DIGITO
-; *   1	    1     0     1     1     0     1    0X6D	2
-; *   1	    1     1     1     1     1     0    0X7E	0
-; *   0	    1     1     0     0     0     0    0X30	1
-; *   1	    0     1     1     0     1     1    0X5B	5
-; *  ...
-; *   1	    1     1     1     0     0     1    0X79	3	
+;/**@brief ESTE PROGRAMA MUESTRA LOS BLOQUES QUE FORMAN UN PROGRAMA 
+; * EN ENSAMBLADOR, LOS BLOQUES SON:
+; * BLOQUE 1. OPCIONES DE CONFIGURACION DEL DSC: OSCILADOR, WATCHDOG,
+; *	BROWN OUT RESET, POWER ON RESET Y CODIGO DE PROTECCION
+; * BLOQUE 2. EQUIVALENCIAS Y DECLARACIONES GLOBALES
+; * BLOQUE 3. ESOACIOS DE MEMORIA: PROGRAMA, DATOS X, DATOS Y, DATOS NEAR
+; * BLOQUE 4. CÓDIGO DE APLICACIÓN
 ; * @device: DSPIC30F4013
+; * @oscilator: FRC, 7.3728MHz
 ; */
         .equ __30F4013, 1
         .include "p30F4013.inc"
@@ -89,8 +76,9 @@
 
 ps_coeff:
         .hword   0x0002, 0x0003, 0x0005, 0x000A
-boleta:  
-	.byte	 0X6D,	0X7F, 0X30, 0X5B, 0
+
+boleta:
+    .byte 0X6D, 0X7E, 0X7E, 0X30, 0X5F, 0X5F, 0X79, 0X7E, 0X7E, 0X6D, 0X79, 0 
 
 ;******************************************************************************
 ;VARIABLES NO INICIALIZADAS EN EL ESPACIO X DE LA MEMORIA DE DATOS
@@ -114,9 +102,6 @@ y_input:  .space 2*MUESTRAS       ;RESERVANDO ESPACIO (EN BYTES) A LA VARIABLE
 
 var1:     .space 2               ;LA VARIABLE VAR1 RESERVA 1 WORD DE ESPACIO
 
-          .section bss, near
-
-  
 ;******************************************************************************
 ;SECCION DE CODIGO EN LA MEMORIA DE PROGRAMA
 ;******************************************************************************
@@ -133,21 +118,56 @@ __reset:
         CALL 	_WREG_INIT          	;SE LLAMA A LA RUTINA DE INICIALIZACION DE REGISTROS
                                   	;OPCIONALMENTE USAR RCALL EN LUGAR DE CALL
         CALL    INI_PERIFERICOS
-
-	MOV	#tblpage(boleta),   W0
-	MOV	W0,		    TBLPAG
-CICLO:		
-	MOV	#tbloffset(boleta), W1
-LEER_DIGITO:	
-	TBLRDL.B    [W1++],	    W0
+	; inicializamos nuestros registros
+	MOV #tblpage(boleta), W0
+	MOV W0, TBLPAG
+	SETM W2
+	CLR W4
+	CLR W3
+	MOV #tbloffset(boleta), W1
+	GOTO LEER_DIGITO
+OBTENER_INICIO: ; Obtiene el inicio del arreglo y lee un dato
+    MOV #tbloffset(boleta), W1
+    GOTO CONTINUAR_IZQ_A_DER
+OBTENER_FINAL: ; Obtiene el final del arreglo y continua donde se quedo
+    MOV #tbloffset(boleta+11), W1
+    GOTO CONTINUAR_DER_A_IZQ
+LEER_DIGITO:
+    MOV PORTF, W2
+    NOP
     
-	CP0.B	W0 ; COMPARA CON 0 y .B solo compara un byte
-	BRA	Z,		    CICLO
-	
-	MOV.B	WREG,		    PORTB
-	NOP
-	GOTO	LEER_DIGITO	
-	
+    BTSS W2, #0
+    XOR #0X1, W3
+    
+    CP0.B W3
+    BRA Z, IZQ_A_DER
+    
+DER_A_IZQ:
+    BTSS W4, #0
+    DEC W1, W1
+    SETM W4
+CONTINUAR_DER_A_IZQ:
+    TBLRDL.B [--W1], W0
+    CP0.B W0
+    BRA Z, OBTENER_FINAL
+    MOV.B WREG, PORTB
+    NOP
+    CALL RETARDO1S
+    GOTO LEER_DIGITO
+
+IZQ_A_DER:
+    BTSC W4, #0
+    INC W1, W1
+    CLR W4
+CONTINUAR_IZQ_A_DER:
+    TBLRDL.B [W1++], W0
+    CP0.B W0
+    BRA	Z, OBTENER_INICIO
+    MOV.B WREG, PORTB
+    NOP
+    CALL RETARDO1S;
+    GOTO LEER_DIGITO
+
 
 ;/**@brief ESTA RUTINA GENERA UN RETARDO DE 1 SEG APROX
 ; */
@@ -169,48 +189,38 @@ CICLO1_1S:
 	POP	W1  ; POP.D W0
 	POP	W0
 	RETURN
+
+; CATODO COMUN
+; A B C D E F G
+; 1 1 1 1 1 1 0  = 0
+; 0 1 1 0 0 0 0  = 1
+; 1 1 0 1 1 0 1  = 2
+; 1 1 1 1 0 0 1  = 3
+; 0 1 1 0 0 1 1  = 4
+; 1 0 1 1 0 1 1  = 5
+; 1 0 1 1 1 1 1  = 6
+; 1 1 1 0 0 0 0  = 7
+; 1 1 1 1 1 1 1  = 8
+; 1 1 1 1 0 1 1  = 9
+    
 ;/**@brief ESTA RUTINA INICIALIZA LOS PERIFERICOS DEL DSC
-; * PORTD: 
-; * RD0 - ENTRADA, DIPSWITCH 0 
-; * RD1 - ENTRADA, DIPSWITCH 1 
-; * RD2 - ENTRADA, DIPSWITCH 2 
-; * RD3 - ENTRADA, DIPSWITCH 3 
-; * PORTB: 
-; * RB0 - SALIDA, SEGMENTO G
-; * RB1 - SALIDA, SEGMENTO F
-; * RB2 - SALIDA, SEGMENTO E
-; * RB3 - SALIDA, SEGMENTO D
-; * RB4 - SALIDA, SEGMENTO C
-; * RB5 - SALIDA, SEGMENTO B 
-; * RB6 - SALIDA, SEGMENTO A 
-; * PORTF: 
-; * RF0 - ENTRADA, PUSH BUTTON 
 ; */
 INI_PERIFERICOS:
-	CLR	PORTD
+	CLR PORTB
 	NOP
-	CLR	LATD
+	CLR LATB
 	NOP
-	MOV	#0X000F,	W0
-	MOV	W0,		TRISD
-	NOP
+	CLR TRISB
 	
-	CLR	PORTB
+	SETM ADPCFG
+	
+	CLR PORTF
 	NOP
-	CLR	LATB
+	CLR LATF
 	NOP
-	CLR	TRISB
+	CLR TRISF
 	NOP
-	SETM	ADPCFG
-
-	CLR	PORTF
-	NOP
-	CLR	LATF
-	NOP
-	CLR	TRISF
-	NOP
-	BSET	TRISF,	    #TRISF0
-	NOP
+	BSET TRISF, #TRISF0
 	
         RETURN
 
