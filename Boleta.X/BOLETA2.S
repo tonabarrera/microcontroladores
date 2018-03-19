@@ -133,6 +133,7 @@ OBTENER_FINAL: ; Obtiene el final del arreglo y continua donde se quedo
     MOV #tbloffset(boleta+11), W1
     GOTO CONTINUAR_DER_A_IZQ
 LEER_DIGITO:
+    CALL RETARDO1S
     MOV PORTF, W2
     NOP
     
@@ -152,7 +153,7 @@ CONTINUAR_DER_A_IZQ:
     BRA Z, OBTENER_FINAL
     MOV.B WREG, PORTB
     NOP
-    CALL RETARDO1S
+    ;CALL RETARDO1S
     GOTO LEER_DIGITO
 
 IZQ_A_DER:
@@ -165,7 +166,7 @@ CONTINUAR_IZQ_A_DER:
     BRA	Z, OBTENER_INICIO
     MOV.B WREG, PORTB
     NOP
-    CALL RETARDO1S;
+    ;CALL RETARDO1S;
     GOTO LEER_DIGITO
 
 

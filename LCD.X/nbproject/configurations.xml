@@ -15,7 +15,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>LCD.s</itemPath>
       <itemPath>principal.c</itemPath>
       <itemPath>retardos.s</itemPath>
       <itemPath>funciones.s</itemPath>

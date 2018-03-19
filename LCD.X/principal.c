@@ -85,18 +85,26 @@ void iniInterrupciones( void );
 extern void iniLCD8bits( void );
 extern void busyFlag( void );
 extern void datoLCD( unsigned char simbolo );
-void _RETARDO1S(void);
+void RETARDO1S(void);
+short int CONV_CODIGO(short int);
 int main (void)
 {       
     iniPerifericos();
     iniInterrupciones();
+    short int dato;
+    short int codigo;
       
     //iniLCD8bits();
     //busyFlag();
     //datoLCD('H');
     //CONTINUARA..
     for(;EVER;) {
-        _RETARDO1S();
+        dato = PORTD;
+        Nop();
+        codigo = CONV_CODIGO(dato);
+        PORTB = codigo;
+        Nop();
+        RETARDO1S();
         Nop();
     }
     
@@ -121,10 +129,25 @@ void iniInterrupciones( void )
 void iniPerifericos( void )
 {
     PORTB = 0;
+    Nop();
     LATB = 0;
+    Nop();
     TRISB = 0;
+    Nop();
     
-    //CONTINUARA...
+    PORTD= 0;
+    Nop();
+    LATD = 0;
+    Nop();
+    TRISD = 0xFFFF;
+    Nop();
+    
+    PORTF = 0;
+    Nop();
+    LATF = 0;
+    Nop();
+    TRISFbits.TRISF0 = 1;
+    Nop();
 }
 
 /********************************************************************************/
