@@ -1,11 +1,13 @@
         .include "p30F4013.inc"
 
-        .global _RETARDO1S
-        .global _RETARDO15ms
+        .global _RETARDO_1S
+        .global _RETARDO_5ms
+	.global _RETARDO_15ms
+	.global _RETARDO_30ms
   
 ;/**@brief ESTA RUTINA GENERA UN RETARDO DE 1 SEG APROX
 ; */
-_RETARDO1S:
+_RETARDO_1S:
 	PUSH	W0  ; PUSH.D W0
 	PUSH	W1
 	
@@ -23,11 +25,24 @@ CICLO1_1S:
 	POP	W1  ; POP.D W0
 	POP	W0
 	RETURN
-
-;/**@brief ESTA RUTINA GENERA UN RETARDO DE 1 SEG APROX
+	
+;/**@brief ESTA RUTINA GENERA UN RETARDO DE 5ms
 ; */
-_RETARDO15ms:
-	;CONTINUARA...
+_RETARDO_5ms:
+	;CONTINUARA
 	RETURN
 
+;/**@brief ESTA RUTINA GENERA UN RETARDO DE 15ms
+; */
+_RETARDO_15ms:
+	CALL _RETARDO_5ms
+	CALL _RETARDO_5ms
+	CALL _RETARDO_5ms
+	RETURN
 
+;/**@brief ESTA RUTINA GENERA UN RETARDO DE 15ms
+; */
+_RETARDO_30ms:
+	CALL _RETARDO_15ms
+	CALL _RETARDO_15ms
+	RETURN

@@ -82,29 +82,36 @@ int var1 __attribute__ ((near));
 
 void iniPerifericos( void );
 void iniInterrupciones( void );
-extern void iniLCD8bits( void );
-extern void busyFlag( void );
-extern void datoLCD( unsigned char simbolo );
-void RETARDO1S(void);
-short int CONV_CODIGO(short int);
-int main (void)
-{       
+void iniLCD8bits( void );
+void busyFlag( void );
+void datoLCD(unsigned char);
+void RETARDO_1S(void);
+void imprimeLCD(char[]);
+void comandoLCD(unsigned char);
+//short int CONV_CODIGO(short int);
+char mensaje[] = "INSTITUTO POLITECNICO NACIONAL";
+
+int main (void) {
     iniPerifericos();
     iniInterrupciones();
-    short int dato;
-    short int codigo;
       
-    //iniLCD8bits();
-    //busyFlag();
-    //datoLCD('H');
-    //CONTINUARA..
+    iniLCD8bits();
+    /* VERSION 1
+    busyFlag();
+    datoLCD('I');
+    busyFlag();
+    datoLCD('P');
+    busyFlag();
+    datoLCD('N');
+    */
+    // VERSION 2
+    //imprimeLCD("INSTITUTO POLITECNICO NACIONAL"); el arreglo ya esta en memoria
+    imprimeLCD(mensaje);
     for(;EVER;) {
-        dato = PORTD;
-        Nop();
-        codigo = CONV_CODIGO(dato);
-        PORTB = codigo;
-        Nop();
-        RETARDO1S();
+        busyFlag();
+        // comando = display cursor shift
+        comandoLCD();
+        RETARDO_1S();
         Nop();
     }
     
