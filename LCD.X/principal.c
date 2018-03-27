@@ -91,36 +91,42 @@ void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
 //short int CONV_CODIGO(short int);
-char mensaje[] = "INSTITUTO POLITECNICO NACIONAL";
+char mensaje[] = "I P N";
 
 int main (void) {
     iniPerifericos();
     iniInterrupciones();
       
     iniLCD8bits();
-    /* VERSION 1 */
+    /*-----------------------VERSION 1-----------------------*/
+    /*
     busyFlag();
     datoLCD('I');
     busyFlag();
     datoLCD('P');
     busyFlag();
     datoLCD('N');
-    
+
     for (;EVER;) {
         Nop();
     }
+    */
+    /*---------------------FIN VERSION 1---------------------*/
     
-    /* VERSION 2
+    /*-----------------------VERSION 2-----------------------*/
+    
     //imprimeLCD("INSTITUTO POLITECNICO NACIONAL"); el arreglo ya esta en memoria
     imprimeLCD(mensaje);
+    short comando = 0x18;
     for(;EVER;) {
         busyFlag();
         // comando = display cursor shift
-        comandoLCD();
+        comandoLCD(comando);
         RETARDO_1S();
         Nop();
     }
-    */
+    
+    /*---------------------FIN VERSION 2---------------------*/
     return 0;
 }
 /****************************************************************************/
@@ -152,16 +158,16 @@ void iniPerifericos( void )
     Nop();
     LATD = 0;
     Nop();
-    TRISD = 0xFFFF;
+    TRISD = 0;
     Nop();
-    
+    /*
     PORTF = 0;
     Nop();
     LATF = 0;
     Nop();
     TRISFbits.TRISF0 = 1;
     Nop();
-    
+    */
     ADPCFG = 0XFFFF;
 }
 

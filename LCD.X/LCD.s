@@ -49,8 +49,8 @@ _comandoLCD:
 ; */
 _busyFlag:
     PUSH    W0 ; HACERLO EN RUTINAS E INTERRUPCIONES
-    
-    SETM.B  TRISB ; El registro TRISB ES VARIABLE POR ESTAR MAPEADO EN LA MEMORIA
+    MOV	    #0X00FF,	W0
+    IOR	    TRISB ; EL REGISTRO TRISB ES VARIABLE POR ESTAR MAPEADO EN LA MEMORIA
     NOP
     BCLR    PORTD,	#RS_LCD
     NOP
@@ -64,7 +64,9 @@ CICLO:
     
     BCLR    PORTD,	#E_LCD
     NOP
-    AND	    TRISB,	#0XFF00
+    MOV	    #0XFF00,	W0
+    AND	    TRISB
+    NOP
     BCLR    PORTD,	#RW_LCD
 
     POP W0
@@ -114,12 +116,17 @@ _iniLCD8bits:
 ; * @param W0, APUNTADOR DEL MENSAJE A MOSTRAR
 ; */
 _imprimeLCD:
-    PUSH W1 ; NO ESTOY SEGURO DE ESTA PARTE
-    MOV W0, W1
-    MOV.B [W1++], W0
+    PUSH    W1 ; NO ESTOY SEGURO DE ESTA PARTE
+    MOV	    W0,	    W1
+    CLR	    W0
+RECORRER:
+    MOV.B   [W1++], W0
     ; PREGUNTAR POR CERO
-    CALL _busyFlag
-    CALL _datoLCD
-    ; CONTINUARA ...
-    POP W1
+    CP0.B   W0
+    BRA Z, SALIR
+    CALL    _busyFlag
+    CALL    _datoLCD
+    GOTO    RECORRER
+SALIR:
+    POP	    W1
     RETURN
