@@ -82,10 +82,12 @@ int var1 __attribute__ ((near));
 
 void iniPerifericos( void );
 void iniInterrupciones( void );
+
+void RETARDO_1S(void);
+
 void iniLCD8bits( void );
 void busyFlag( void );
 void datoLCD(unsigned char);
-void RETARDO_1S(void);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
 //short int CONV_CODIGO(short int);
@@ -96,15 +98,19 @@ int main (void) {
     iniInterrupciones();
       
     iniLCD8bits();
-    /* VERSION 1
+    /* VERSION 1 */
     busyFlag();
     datoLCD('I');
     busyFlag();
     datoLCD('P');
     busyFlag();
     datoLCD('N');
-    */
-    // VERSION 2
+    
+    for (;EVER;) {
+        Nop();
+    }
+    
+    /* VERSION 2
     //imprimeLCD("INSTITUTO POLITECNICO NACIONAL"); el arreglo ya esta en memoria
     imprimeLCD(mensaje);
     for(;EVER;) {
@@ -114,7 +120,7 @@ int main (void) {
         RETARDO_1S();
         Nop();
     }
-    
+    */
     return 0;
 }
 /****************************************************************************/
@@ -124,9 +130,9 @@ int main (void) {
 /****************************************************************************/
 void iniInterrupciones( void )
 {
-    //Habilitacion de interrupcion del periférico 1
-    //Habilitacion de interrupcion del periférico 2
-    //Habilitacion de interrupcion del periférico 3
+    // Habilitacion de interrupcion del periférico 1
+    // Habilitacion de interrupcion del periférico 2
+    // Habilitacion de interrupcion del periférico 3
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
@@ -155,6 +161,8 @@ void iniPerifericos( void )
     Nop();
     TRISFbits.TRISF0 = 1;
     Nop();
+    
+    ADPCFG = 0XFFFF;
 }
 
 /********************************************************************************/
