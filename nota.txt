@@ -1,0 +1,8 @@
+preescalador -> baja la frecuencia
+Usar los valores que pueda guardar en el registro
+Uso el de la preescala mas pqueña
+frecuencia de salida 261.62hz
+la de interrupcion es igual al doble de la generada por software
+ya que tengo que generar un valor de 1 y otro de 0
+tomamos la preescala que genere el menor error
+

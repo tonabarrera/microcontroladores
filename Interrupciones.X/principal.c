@@ -87,42 +87,40 @@ void RETARDO_1S(void);
 
 void iniLCD8bits( void );
 void busyFlag( void );
-void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
-//short int CONV_CODIGO(short int);
-char mensaje[] = "Instituto Politecnico Nacional";
+void INT0Interrupt (void);
+
+// Variables de conteo que tambien estan en ensamblador
+unsigned char uni;
+unsigned char dece;
+unsigned char cen;
+unsigned char umi;
 
 int main (void) {
     iniPerifericos();
     iniInterrupciones();
-      
     iniLCD8bits();
-    /*-----------------------VERSION 1-----------------------*/
-    /*
-    busyFlag();
-    datoLCD('I');
-    busyFlag();
-    datoLCD('P');
-    busyFlag();
-    datoLCD('N');
-
-    for (;EVER;) {
-        Nop();
-    }
-    */
-    /*---------------------FIN VERSION 1---------------------*/
     
-    /*-----------------------VERSION 2-----------------------*/
+    uni = 0;
+    dece = 0;
+    cen = 0;
+    umi = 0;
     
-    //imprimeLCD("INSTITUTO POLITECNICO NACIONAL"); el arreglo ya esta en memoria
-    imprimeLCD(mensaje);
-    short comando = 0x18;
+    unsigned char numero[4];
+    // Este comando desactiva y hace que no parpade el cursor
+    short comando = 0xC;
+    comandoLCD(comando);
+    
+    imprimeLCD("CONTEO:");
+    
     for(;EVER;) {
+        numero[0] = umi + '0';
+        numero[1] = cen + '0';
+        numero[2] = dece + '0';
+        numero[3] = uni + '0';
         busyFlag();
-        // comando = display cursor shift
-        comandoLCD(comando);
-        RETARDO_1S();
+        imprimeLCD(numero);
         Nop();
     }
     
@@ -139,6 +137,13 @@ void iniInterrupciones( void )
     // Habilitacion de interrupcion del periférico 1
     // Habilitacion de interrupcion del periférico 2
     // Habilitacion de interrupcion del periférico 3
+ 
+    IFS0bits.INT0IF=0; //Reset INT0 interrupt flag
+    IEC0bits.INT0IE=1;  //enable INT0 Interrupt Service Routine.
+    INTCON2bits.INT0EP=1; // Interrupt edge polarity.
+    
+    // Set Interrupt Priority.
+    IPC0bits.INT0IP = 4; // set low priority.
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
@@ -160,14 +165,16 @@ void iniPerifericos( void )
     Nop();
     TRISD = 0;
     Nop();
-    /*
-    PORTF = 0;
+    
+    // EL puerto A es INT0  por lo que se configura como entrada
+    // su respectivo TRISX
+    PORTA=0;
     Nop();
-    LATF = 0;
+    LATA=0;
     Nop();
-    TRISFbits.TRISF0 = 1;
+    TRISA=0XFFFF;
     Nop();
-    */
+
     ADPCFG = 0XFFFF;
 }
 
