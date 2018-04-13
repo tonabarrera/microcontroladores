@@ -27,7 +27,7 @@ _CONV_CODIGO:
 ; *    generada por un sensor
 ; * @PARAM: W0, VALOR A CONVERTIR
 ; */
-__INT0Interrupt:
+__INT0InteINT0IFrrupt:
     PUSH W0
     MOV #10, W0
     INC.B _uni
