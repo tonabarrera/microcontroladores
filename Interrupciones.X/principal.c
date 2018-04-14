@@ -96,6 +96,8 @@ unsigned char uni;
 unsigned char dece;
 unsigned char cen;
 unsigned char umi;
+char contador[5];
+
 
 int main (void) {
     iniPerifericos();
@@ -107,10 +109,8 @@ int main (void) {
     cen = 0;
     umi = 0;
     
-    unsigned char contador[5];
     // Este comando desactiva y hace que no parpade el cursor
     short comando = 0xC;
-    comandoLCD(comando);
     
     imprimeLCD("CONTEO:");
     
@@ -120,9 +120,12 @@ int main (void) {
         contador[2] = dece + 0x30;
         contador[3] = uni + 0x30;
         contador[4] = 0;
+        imprimeLCD(contador);
+        busyFlag();
         comandoLCD(0x87);
         busyFlag();
-        imprimeLCD(contador);
+        comandoLCD(comando);
+        
         Nop();
     }
     
@@ -140,9 +143,9 @@ void iniInterrupciones( void )
     // Habilitacion de interrupcion del periférico 2
     // Habilitacion de interrupcion del periférico 3
  
-    IFS0bits.INT0IF = 0; //Reset INT0 interrupt flag
-    IEC0bits.INT0IE = 1;  //enable INT0 Interrupt Service Routine.
-    INTCON2bits.INT0EP = 1; // Interrupt edge polarity.
+    IFS0bits.INT0IF = 0; // Bandera de interrupcion
+    IEC0bits.INT0IE = 1; // Habilitar interrupciones
+    INTCON2bits.INT0EP = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/

@@ -1,7 +1,7 @@
         .include "p30F4013.inc"
 
         .global _CONV_CODIGO
-	.global _INT0Interrupt
+	.global __INT0Interrupt
 	.global _uni
 	.global _dece
 	.global _cen
@@ -27,7 +27,7 @@ _CONV_CODIGO:
 ; *    generada por un sensor
 ; * @PARAM: W0, VALOR A CONVERTIR
 ; */
-__INT0InteINT0IFrrupt:
+__INT0Interrupt:
     PUSH W0
     MOV #10, W0
     INC.B _uni
