@@ -90,39 +90,63 @@ void busyFlag( void );
 void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
-//short int CONV_CODIGO(short int);
-char mensaje[] = "Instituto Politecnico Nacional";
+
+void NOTA_DO(void);
+void NOTA_RE(void);
+void NOTA_MI(void);
+void NOTA_FA(void);
+void NOTA_SOL(void);
+void NOTA_LA(void);
+void NOTA_SI(void);
 
 int main (void) {
     iniPerifericos();
-    iniInterrupciones();
-      
     iniLCD8bits();
-    /*-----------------------VERSION 1-----------------------*/
-    /*
-    busyFlag();
-    datoLCD('I');
-    busyFlag();
-    datoLCD('P');
-    busyFlag();
-    datoLCD('N');
-
-    for (;EVER;) {
-        Nop();
-    }
-    */
-    /*---------------------FIN VERSION 1---------------------*/
+    iniInterrupciones();
     
-    /*-----------------------VERSION 2-----------------------*/
+    int bp = 0;
     
-    //imprimeLCD("INSTITUTO POLITECNICO NACIONAL"); el arreglo ya esta en memoria
-    imprimeLCD(mensaje);
-    short comando = 0x18;
     for(;EVER;) {
-        busyFlag();
-        // comando = display cursor shift
-        comandoLCD(comando);
-        RETARDO_1S();
+        if (!PORTFbits.RF0) {
+            if (!bp) {
+                NOTA_DO();
+                bp = 1;
+            }
+        } else if (!PORTFbits.RF1) {
+            if (!bp) {
+                NOTA_RE();
+                bp = 1;
+            }
+        } else if (!PORTFbits.RF2) {
+            if (!bp) {
+                NOTA_MI();
+                bp = 1;
+            }
+        } else if (!PORTFbits.RF3) {
+            if (!bp) {
+                NOTA_FA();
+                bp = 1;
+            }
+        } else if (!PORTFbits.RF4) {
+            if (!bp) {
+                NOTA_SOL();
+                bp = 1;
+            }
+        } else if (!PORTFbits.RF5) {
+            if (!bp) {
+                NOTA_LA();
+                bp = 1;
+            }
+        } else if (!PORTFbits.RF6) {
+            if (!bp) {
+                NOTA_SI();
+                bp = 1;
+            }
+        } else {
+            bp = 0;
+            PORTDbits.RD3 = 0;
+            T1CONbits.TON = 0;
+        }
         Nop();
     }
     
@@ -139,6 +163,8 @@ void iniInterrupciones( void )
     // Habilitacion de interrupcion del periférico 1
     // Habilitacion de interrupcion del periférico 2
     // Habilitacion de interrupcion del periférico 3
+    IFS0bits.INT0IF = 0;
+    IEC0bits.INT0IE = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
@@ -160,14 +186,14 @@ void iniPerifericos( void )
     Nop();
     TRISD = 0;
     Nop();
-    /*
+    
     PORTF = 0;
     Nop();
     LATF = 0;
     Nop();
-    TRISFbits.TRISF0 = 1;
+    TRISF = 0XFFFF;
     Nop();
-    */
+    
     ADPCFG = 0XFFFF;
 }
 
