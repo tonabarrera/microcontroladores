@@ -1,7 +1,7 @@
         .include "p30F4013.inc"
 
         .global _CONV_CODIGO
-	.global _INT0Interrupt
+	.global __INT0Interrupt
 	.global _uni
 	.global _dece
 	.global _cen
@@ -29,22 +29,23 @@ _CONV_CODIGO:
 ; */
 __INT0Interrupt:
     PUSH W0
-    INC _uni
-    CP _uni, #10
+    MOV #10, W0
+    INC.B _uni
+    CP.B _uni
     BRA NZ, FIN_INTERRUPCION ; SI NO ES IGUAL A 10 SALTA
-    CLR _uni
-    INC _dece
-    CP _dece, #10
+    CLR.B _uni
+    INC.B _dece
+    CP.B _dece
     BRA NZ, FIN_INTERRUPCION
-    CLR _dece
-    INC _cen
-    CP _cen, #10
+    CLR.B _dece
+    INC.B _cen
+    CP.B _cen
     BRA NZ, FIN_INTERRUPCION
-    CLR _cen
-    INC _umi
-    CP _umi, #10
+    CLR.B _cen
+    INC.B _umi
+    CP.B _umi
     BRA NZ, FIN_INTERRUPCION
-    CLR _umi
+    CLR.B _umi
     
 FIN_INTERRUPCION:
     BCLR    IFS0,   #INT0IF
