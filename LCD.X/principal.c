@@ -91,7 +91,7 @@ void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
 //short int CONV_CODIGO(short int);
-char mensaje[] = "I P N";
+char mensaje[] = "Instituto Politecnico Nacional";
 
 int main (void) {
     iniPerifericos();

@@ -11,7 +11,7 @@ _RETARDO_1S:
 	PUSH	W0  ; PUSH.D W0
 	PUSH	W1
 	
-	MOV	#10,	    W1
+	MOV	#5,	    W1
 CICLO2_1S:
     
 	CLR	W0	
