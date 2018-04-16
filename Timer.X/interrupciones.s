@@ -1,6 +1,6 @@
         .include "p30F4013.inc"
 
-	.global __INT0Interrupt
+	.global __T1Interrupt
 	.global _NOTA_DO
 	.global _NOTA_RE
 	.global _NOTA_MI
@@ -13,55 +13,81 @@
 /**@brief LAS SIGUIENTES FUNCIONES SON LAS NOTAS A UTILIZAR
 ; */
 _NOTA_DO:
+    PUSH W0
     CLR TMR1
-    MOV #55, PR1
-    MOV #0X8020, T1CON
+    MOV #55, W0
+    MOV W0, PR1
+    MOV #0X8020, W0
+    MOV W0, T1CON
+    POP W0
     RETURN
     
 _NOTA_RE:
+    PUSH W0
     CLR TMR1
-    MOV #49, PR1
-    MOV #0X8020, T1CON
+    MOV #49, W0
+    MOV W0, PR1
+    MOV #0X8020, W0
+    MOV W0, T1CON
+    POP W0
     RETURN
 
 _NOTA_MI:
+    PUSH W0
     CLR TMR1
-    MOV #11, PR1
-    MOV #0X8020, T1CON
+    MOV #11, W0
+    MOV W0, PR1
+    MOV #0X8020, W0
+    MOV W0, T1CON
+    POP W0
     RETURN
 
 _NOTA_FA:
+    PUSH W0
     CLR TMR1
-    MOV #2639, PR1
-    MOV #0X8020, T1CON
+    MOV #2639, W0
+    MOV W0, PR1
+    MOV #0X8020, W0
+    MOV W0, T1CON
+    POP W0
     RETURN
     
 _NOTA_SOL:
+    PUSH W0
     CLR TMR1
-    MOV #2351, PR1
-    MOV #0X8020, T1CON
+    MOV #2351, W0
+    MOV W0, PR1
+    MOV #0X8020, W0
+    MOV W0, T1CON
+    POP W0
     RETURN
     
 _NOTA_LA:
+    PUSH W0
     CLR TMR1
-    MOV #8, PR1
-    MOV #0X8020, T1CON
+    MOV #8, W0
+    MOV W0, PR1
+    MOV #0X8020, W0
+    MOV W0, T1CON
+    POP W0
     RETURN
     
 _NOTA_SI:
+    PUSH W0
     CLR TMR1
-    MOV #1866, PR1
-    MOV #0X8020, T1CON
+    MOV #1866, W0
+    MOV W0, PR1
+    MOV #0X8020, W0
+    MOV W0, T1CON
+    POP W0
     RETURN
     
-/**@brief Esta rutina se usa como contador respecto a una interrupcion
-; *    generada por un sensor
-; * @PARAM: W0, VALOR A CONVERTIR
+/**@brief Esta es la rutina del timer 1
 ; */
-__INT0Interrupt:
+__T1Interrupt:
     PUSH W0
-    BGT LATD, #RD3
-    BCLR    IFS0,   #INT0IF
+    BTG LATD, #RD3
+    BCLR    IFS0,   #T1IF
     POP	    W0
     RETFIE
     
