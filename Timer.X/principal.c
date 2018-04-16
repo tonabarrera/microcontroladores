@@ -163,8 +163,8 @@ void iniInterrupciones( void )
     // Habilitacion de interrupcion del periférico 1
     // Habilitacion de interrupcion del periférico 2
     // Habilitacion de interrupcion del periférico 3
-    IFS0bits.INT0IF = 0;
-    IEC0bits.INT0IE = 1;
+    IFS0bits.T1IF = 0;
+    IEC0bits.T1IE = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
