@@ -210,14 +210,3 @@ void iniPerifericos( void )
     
     ADPCFG = 0XFFFF; // Deshabilitar el modo analogico
 }
-
-/********************************************************************************/
-/* DESCRICION:	ISR (INTERRUPT SERVICE ROUTINE) DEL TIMER 1						*/
-/* LA RUTINA TIENE QUE SER GLOBAL PARA SER UNA ISR								*/	
-/* SE USA PUSH.S PARA GUARDAR LOS REGISTROS W0, W1, W2, W3, C, Z, N Y DC EN LOS */
-/* REGISTROS SOMBRA																*/
-/********************************************************************************/
-void __attribute__((__interrupt__)) _T1Interrupt( void )
-{
-        IFS0bits.T1IF = 0;    //SE LIMPIA LA BANDERA DE INTERRUPCION DEL TIMER 1                      
-}

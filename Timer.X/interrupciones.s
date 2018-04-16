@@ -87,6 +87,7 @@ _NOTA_SI:
 __T1Interrupt:
     PUSH W0
     BTG LATD, #RD3
+    NOP
     BCLR    IFS0,   #T1IF
     POP	    W0
     RETFIE
