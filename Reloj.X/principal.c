@@ -89,82 +89,55 @@ void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
 
-void NOTA_DO(void);
-void NOTA_RE(void);
-void NOTA_MI(void);
-void NOTA_FA(void);
-void NOTA_SOL(void);
-void NOTA_LA(void);
-void NOTA_SI(void);
-
-char mensaje_do[] = "NOTA DO";
-char mensaje_re[] = "NOTA RE";
-char mensaje_mi[] = "NOTA MI";
-char mensaje_fa[] = "NOTA FA";
-char mensaje_sol[] = "NOTA SOL";
-char mensaje_la[] = "NOTA LA";
-char mensaje_si[] = "NOTA SI";
-
+unsigned char useg;
+unsigned char dseg;
+unsigned char umin;
+unsigned char dmin;
+unsigned char uhr;
+unsigned char dhr;
+unsigned char cadena[9]; //00:00:00/0
 
 int main (void) {
+    short comando = 0xC; // para que no aparezca el cursor
     iniPerifericos();
     iniLCD8bits();
     iniInterrupciones();
     
-    int bp = 0;
+    // Aqui se debe de mandar a llamar al paso de la muerte
+    // EN_RTC
+    
+    useg = 0;
+    dseg = 0;
+    umin = 0;
+    dmin = 0;
+    uhr = 0;
+    dhr = 0;
+    
+    IFS0bits.T1IF = 0;
+    IEC0bits.T1IE = 1;
+    T1CONbits.TON = 1;
     
     for(;EVER;) {
-        if (!PORTFbits.RF0) {
-            if (!bp) {
-                NOTA_DO();
-                imprimeLCD(mensaje_do);
-                bp = 1;
-            }
-        } else if (!PORTFbits.RF1) {
-            if (!bp) {
-                NOTA_RE();
-                imprimeLCD(mensaje_re);
-                bp = 1;
-            }
-        } else if (!PORTFbits.RF2) {
-            if (!bp) {
-                NOTA_MI();
-                imprimeLCD(mensaje_mi);
-                bp = 1;
-            }
-        } else if (!PORTFbits.RF3) {
-            if (!bp) {
-                NOTA_FA();
-                imprimeLCD(mensaje_fa);
-                bp = 1;
-            }
-        } else if (!PORTFbits.RF4) {
-            if (!bp) {
-                NOTA_SOL();
-                imprimeLCD(mensaje_sol);
-                bp = 1;
-            }
-        } else if (!PORTFbits.RF5) {
-            if (!bp) {
-                NOTA_LA();
-                imprimeLCD(mensaje_la);
-                bp = 1;
-            }
-        } else if (!PORTFbits.RF6) {
-            if (!bp) {
-                NOTA_SI();
-                imprimeLCD(mensaje_si);
-                bp = 1;
-            }
-        } else {
-            bp = 0;
-            PORTDbits.RD3 = 0;
-            T1CONbits.TON = 0;
-        }
+        // Aqui solo se manda a imprimir la cadena
+        cadena[0] = dhr + 0x30;
+        cadena[1] = uhr + 0x30;
+        cadena[2] = ':';
+        cadena[3] = dmin + 0x30;
+        cadena[4] = umin + 0x30;
+        cadena[5] = ':';
+        cadena[6] = dseg + 0x30;
+        cadena[7] = useg + 0x30;
+        cadena[8] = 0;
+        
+        imprimeLCD(cadena);
+        busyFlag();
+        comandoLCD(0x87);
+        busyFlag();
+        comandoLCD(comando);
+
         Nop();
     }
     
-    /*---------------------FIN VERSION 2---------------------*/
     return 0;
 }
 /****************************************************************************/
@@ -177,8 +150,9 @@ void iniInterrupciones( void )
     // Habilitacion de interrupcion del periférico 1
     // Habilitacion de interrupcion del periférico 2
     // Habilitacion de interrupcion del periférico 3
-    IFS0bits.T1IF = 0;
-    IEC0bits.T1IE = 1;
+    TMR1 = 0;
+    PR1 = 0X8000;
+    T1CON = 0X0002;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
@@ -201,11 +175,12 @@ void iniPerifericos( void )
     TRISD = 0;
     Nop();
     
-    PORTF = 0;
+    // Solo deberian ser el 13 y 14
+    PORTC = 0;
     Nop();
-    LATF = 0;
+    LATC = 0;
     Nop();
-    TRISF = 0XFFFF;
+    TRISC = 0XFFFF;
     Nop();
     
     ADPCFG = 0XFFFF; // Deshabilitar el modo analogico
