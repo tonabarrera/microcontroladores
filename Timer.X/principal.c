@@ -83,8 +83,6 @@ int var1 __attribute__ ((near));
 void iniPerifericos( void );
 void iniInterrupciones( void );
 
-void RETARDO_1S(void);
-
 void iniLCD8bits( void );
 void busyFlag( void );
 void datoLCD(unsigned char);
@@ -99,6 +97,15 @@ void NOTA_SOL(void);
 void NOTA_LA(void);
 void NOTA_SI(void);
 
+char mensaje_do[] = "NOTA DO";
+char mensaje_re[] = "NOTA RE";
+char mensaje_mi[] = "NOTA MI";
+char mensaje_fa[] = "NOTA FA";
+char mensaje_sol[] = "NOTA SOL";
+char mensaje_la[] = "NOTA LA";
+char mensaje_si[] = "NOTA SI";
+
+
 int main (void) {
     iniPerifericos();
     iniLCD8bits();
@@ -110,36 +117,43 @@ int main (void) {
         if (!PORTFbits.RF0) {
             if (!bp) {
                 NOTA_DO();
+                imprimeLCD(mensaje_do);
                 bp = 1;
             }
         } else if (!PORTFbits.RF1) {
             if (!bp) {
                 NOTA_RE();
+                imprimeLCD(mensaje_re);
                 bp = 1;
             }
         } else if (!PORTFbits.RF2) {
             if (!bp) {
                 NOTA_MI();
+                imprimeLCD(mensaje_mi);
                 bp = 1;
             }
         } else if (!PORTFbits.RF3) {
             if (!bp) {
                 NOTA_FA();
+                imprimeLCD(mensaje_fa);
                 bp = 1;
             }
         } else if (!PORTFbits.RF4) {
             if (!bp) {
                 NOTA_SOL();
+                imprimeLCD(mensaje_sol);
                 bp = 1;
             }
         } else if (!PORTFbits.RF5) {
             if (!bp) {
                 NOTA_LA();
+                imprimeLCD(mensaje_la);
                 bp = 1;
             }
         } else if (!PORTFbits.RF6) {
             if (!bp) {
                 NOTA_SI();
+                imprimeLCD(mensaje_si);
                 bp = 1;
             }
         } else {
@@ -194,16 +208,5 @@ void iniPerifericos( void )
     TRISF = 0XFFFF;
     Nop();
     
-    ADPCFG = 0XFFFF;
-}
-
-/********************************************************************************/
-/* DESCRICION:	ISR (INTERRUPT SERVICE ROUTINE) DEL TIMER 1						*/
-/* LA RUTINA TIENE QUE SER GLOBAL PARA SER UNA ISR								*/	
-/* SE USA PUSH.S PARA GUARDAR LOS REGISTROS W0, W1, W2, W3, C, Z, N Y DC EN LOS */
-/* REGISTROS SOMBRA																*/
-/********************************************************************************/
-void __attribute__((__interrupt__)) _T1Interrupt( void )
-{
-        IFS0bits.T1IF = 0;    //SE LIMPIA LA BANDERA DE INTERRUPCION DEL TIMER 1                      
+    ADPCFG = 0XFFFF; // Deshabilitar el modo analogico
 }
