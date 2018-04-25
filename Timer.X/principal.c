@@ -97,13 +97,13 @@ void NOTA_SOL(void);
 void NOTA_LA(void);
 void NOTA_SI(void);
 
-char mensaje_do[] = "NOTA DO";
-char mensaje_re[] = "NOTA RE";
-char mensaje_mi[] = "NOTA MI";
-char mensaje_fa[] = "NOTA FA";
-char mensaje_sol[] = "NOTA SOL";
-char mensaje_la[] = "NOTA LA";
-char mensaje_si[] = "NOTA SI";
+char MENSAJE_DO[] = "NOTA DO\0";
+char MENSAJE_RE[] = "NOTA RE";
+char MENSAJE_MI[] = "NOTA MI";
+char MENSAJE_FA[] = "NOTA FA";
+char MENSAJE_SOL[] = "NOTA SOL";
+char MENSAJE_LA[] = "NOTA LA";
+char MENSAJE_SI[] = "NOTA SI";
 
 
 int main (void) {
@@ -114,46 +114,46 @@ int main (void) {
     int bp = 0;
     
     for(;EVER;) {
-        if (!PORTFbits.RF0) {
+        if (!PORTFbits.RF6) {
             if (!bp) {
                 NOTA_DO();
-                imprimeLCD(mensaje_do);
+                //imprimeLCD(mensaje_do);
                 bp = 1;
             }
-        } else if (!PORTFbits.RF1) {
+        } else if (!PORTFbits.RF3) {
             if (!bp) {
                 NOTA_RE();
-                imprimeLCD(mensaje_re);
+                //imprimeLCD(mensaje_re);
                 bp = 1;
             }
         } else if (!PORTFbits.RF2) {
             if (!bp) {
                 NOTA_MI();
-                imprimeLCD(mensaje_mi);
+                //imprimeLCD(mensaje_mi);
                 bp = 1;
             }
-        } else if (!PORTFbits.RF3) {
+        } else if (!PORTFbits.RF5) {
             if (!bp) {
                 NOTA_FA();
-                imprimeLCD(mensaje_fa);
+                //imprimeLCD(mensaje_fa);
                 bp = 1;
             }
         } else if (!PORTFbits.RF4) {
             if (!bp) {
                 NOTA_SOL();
-                imprimeLCD(mensaje_sol);
+                //imprimeLCD(mensaje_sol);
                 bp = 1;
             }
-        } else if (!PORTFbits.RF5) {
+        } else if (!PORTFbits.RF1) {
             if (!bp) {
                 NOTA_LA();
-                imprimeLCD(mensaje_la);
+                //imprimeLCD(mensaje_la);
                 bp = 1;
             }
-        } else if (!PORTFbits.RF6) {
+        } else if (!PORTFbits.RF0) {
             if (!bp) {
                 NOTA_SI();
-                imprimeLCD(mensaje_si);
+                //imprimeLCD(mensaje_si);
                 bp = 1;
             }
         } else {
