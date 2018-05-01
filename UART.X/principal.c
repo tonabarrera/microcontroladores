@@ -112,7 +112,7 @@ int main (void) {
     
 
     for(;EVER;) {
-        if (datoRCU == 1) {
+        if (datoRCU) {
             busyFlag();
             datoLCD(dato);
             datoRCU = 0;
