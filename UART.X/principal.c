@@ -89,13 +89,34 @@ void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
 
+unsigned char datoRCU;
+unsigned char dato;
+
 int main (void) {
     iniPerifericos();
     
     iniLCD8bits();
+    
+    // Configurar el UART
+    U1MODE = 0x0420;
+    U1STA = 0x8000;
+    U1BRG = 11;
+    datoRCU = 0;
+    
+    // Habilitar interrupcion
+    IFS0bits.U1RXIF = 0;
+    IEC0bits.U1RXIE = 1;
+    
+    // Habilitar UART
+    U1MODEbits.UARTEN = 1;
+    
 
     for(;EVER;) {
-        Nop();
+        if (datoRCU == 1) {
+            busyFlag();
+            datoLCD(dato);
+            datoRCU = 0;
+        }
     }
     
     /*---------------------FIN VERSION 2---------------------*/
@@ -111,8 +132,8 @@ void iniInterrupciones( void )
     // Habilitacion de interrupcion del periférico 1
     // Habilitacion de interrupcion del periférico 2
     // Habilitacion de interrupcion del periférico 3
-    IFS0bits.T1IF = 0;
-    IEC0bits.T1IE = 1;
+    // IFS0bits.T1IF = 0;
+    // IEC0bits.T1IE = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
@@ -135,11 +156,18 @@ void iniPerifericos( void )
     TRISD = 0;
     Nop();
     
-    PORTF = 0;
+    PORTCbits.RC13 = 0;
     Nop();
-    LATF = 0;
+    LATCbits.LATC13 = 0;
     Nop();
-    TRISF = 0XFFFF;
+    TRISCbits.TRISC13 = 0;
+    Nop();
+    
+    PORTCbits.RC14 = 0;
+    Nop();
+    LATCbits.LATC14 = 0;
+    Nop();
+    TRISCbits.TRISC14 = 1;
     Nop();
     
     ADPCFG = 0XFFFF; // Deshabilitar el modo analogico
