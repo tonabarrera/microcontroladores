@@ -110,6 +110,8 @@ int main (void) {
     // Habilitar UART
     U1MODEbits.UARTEN = 1;
     
+    busyFlag();
+    comandoLCD(0xC); // Desactivar el cursor
 
     for(;EVER;) {
         if (datoRCU) {

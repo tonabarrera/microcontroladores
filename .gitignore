@@ -12,3 +12,6 @@
 /Timer.X/dist/default/
 /Reloj.X/nbproject/private/
 /UART.X/nbproject/private/
+*.out
+*.o
+
