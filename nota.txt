@@ -6,3 +6,24 @@ la de interrupcion es igual al doble de la generada por software
 ya que tengo que generar un valor de 1 y otro de 0
 tomamos la preescala que genere el menor error
 
+COMUNICACION ASINCRONA
+no hay comunicacion de maestro a esclavo por medio de un reloj, cada uno tiene el suyo
+
+Para la comunicacion serial tenemos el estandar RS232, define:
+    - Formatos de trama
+    - Niveles de voltaje
+    - Transmsion hasta 15 metros
+
+Hay otros estandares como: RS485 con transmsion hasta 1 KM
+En TTL, transmsion hasta 5 metros:
+0 - 0.8 Es un cero logico
+3 - 5 Es un uno logico
+
+Los baudios es lo que mide la velocidad
+
+NRZ bipolar es la codificacion que usa el UART
+
+Vamo a usar un FT232 que hace la conversion de USB a UART considerando los niveles 232
+
+Para trabajar wifi utilizaremos comunicacion de UART a UART
+
