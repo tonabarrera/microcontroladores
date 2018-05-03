@@ -27,3 +27,29 @@ Vamo a usar un FT232 que hace la conversion de USB a UART considerando los nivel
 
 Para trabajar wifi utilizaremos comunicacion de UART a UART
 
+<<<<<<< HEAD
+=======
+Preguntar de cuatro en cuatro debido a la estructura FIFO todo gracias a nuestro modelo de UART
+transmcion de 9 bits para 485
+
+Para la práctica trabajaremos con:
+    - Una velocidad: 9600 bautios
+    - Bits dato: 8
+    - Un bit de paro
+
+Primero configuro UART:
+MODO ABAUD: No sabes que velocidad utiliza el otro dispositivo
+UTXEN para habilidar la transmicion de datos
+Vamos a generar una interrupcion cada que se manda un dato
+ADDEN es para la red 485
+FOSC = 7.37528 Mhz
+FCY = FOC/4 = 1.8432 MHz
+Solo hay ciertos valos que permiten tener un valor entero para tener 0 error en la tasa de transferencias
+
+Siempre limpiar la banderas de interrupcion
+En el registro espejo debemos prender la interrupcion de recepcion
+
+Finalmente prendo UART
+
+La LCD es un periferico demasiado lento
+>>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3

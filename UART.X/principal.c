@@ -88,106 +88,38 @@ void busyFlag( void );
 void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
-void PASO_DE_LA_MUERTE(void);
 
-<<<<<<< HEAD
-char USEG;
-char DSEG;
-char UMIN;
-char DMIN;
-char UHR;
-char DHR;
-char cadena[9]; //00:00:00/0
-=======
-unsigned char useg;
-unsigned char dseg;
-unsigned char umin;
-unsigned char dmin;
-unsigned char uhr;
-unsigned char dhr;
-unsigned char cadena[9]; //00:00:00/0
->>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3
+unsigned char datoRCU;
+unsigned char dato;
 
 int main (void) {
-    short comando = 0xC; // para que no aparezca el cursor
     iniPerifericos();
+    
     iniLCD8bits();
     
-    USEG = 5;
-    DSEG = 5;
-    UMIN = 9;
-    DMIN = 5;
-    UHR = 3;
-    DHR = 2;
+    // Configurar el UART
+    U1MODE = 0x0420;
+    U1STA = 0x8000;
+    U1BRG = 11;
+    datoRCU = 0;
     
-    iniInterrupciones();
+    // Habilitar interrupcion
+    IFS0bits.U1RXIF = 0;
+    IEC0bits.U1RXIE = 1;
     
-<<<<<<< HEAD
-     // Aqui se debe de mandar a llamar al paso de la muerte
-    PASO_DE_LA_MUERTE();
-    // EN_RTC
+    // Habilitar UART
+    U1MODEbits.UARTEN = 1;
     
-    IFS0bits.T1IF = 0;
-    IEC0bits.T1IE = 1;
-    T1CONbits.TON = 1;
-    
-    busyFlag();
-    comandoLCD(comando);
-    
-    for(;EVER;) {
-        // Aqui solo se manda a imprimir la cadena
-        cadena[0] = DHR + 0x30;
-        cadena[1] = UHR + 0x30;
-        cadena[2] = ':';
-        cadena[3] = DMIN + 0x30;
-        cadena[4] = UMIN + 0x30;
-        cadena[5] = ':';
-        cadena[6] = DSEG + 0x30;
-        cadena[7] = USEG + 0x30;
-        cadena[8] = 0;
-       
-        busyFlag();
-        imprimeLCD(cadena);
-        
-        busyFlag();
-        comandoLCD(0x80);
-=======
-    // Aqui se debe de mandar a llamar al paso de la muerte
-    // EN_RTC
-    
-    useg = 0;
-    dseg = 0;
-    umin = 0;
-    dmin = 0;
-    uhr = 0;
-    dhr = 0;
-    
-    IFS0bits.T1IF = 0;
-    IEC0bits.T1IE = 1;
-    T1CONbits.TON = 1;
-    
-    for(;EVER;) {
-        // Aqui solo se manda a imprimir la cadena
-        cadena[0] = dhr + 0x30;
-        cadena[1] = uhr + 0x30;
-        cadena[2] = ':';
-        cadena[3] = dmin + 0x30;
-        cadena[4] = umin + 0x30;
-        cadena[5] = ':';
-        cadena[6] = dseg + 0x30;
-        cadena[7] = useg + 0x30;
-        cadena[8] = 0;
-        
-        imprimeLCD(cadena);
-        busyFlag();
-        comandoLCD(0x87);
-        busyFlag();
-        comandoLCD(comando);
->>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3
 
-        Nop();
+    for(;EVER;) {
+        if (datoRCU) {
+            busyFlag();
+            datoLCD(dato);
+            datoRCU = 0;
+        }
     }
     
+    /*---------------------FIN VERSION 2---------------------*/
     return 0;
 }
 /****************************************************************************/
@@ -200,9 +132,8 @@ void iniInterrupciones( void )
     // Habilitacion de interrupcion del periférico 1
     // Habilitacion de interrupcion del periférico 2
     // Habilitacion de interrupcion del periférico 3
-    TMR1 = 0;
-    PR1 = 0X8000;
-    T1CON = 0X0002;
+    // IFS0bits.T1IF = 0;
+    // IEC0bits.T1IE = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
@@ -225,12 +156,18 @@ void iniPerifericos( void )
     TRISD = 0;
     Nop();
     
-    // Solo deberian ser el 13 y 14
-    PORTC = 0;
+    PORTCbits.RC13 = 0;
     Nop();
-    LATC = 0;
+    LATCbits.LATC13 = 0;
     Nop();
-    TRISC = 0XFFFF;
+    TRISCbits.TRISC13 = 0;
+    Nop();
+    
+    PORTCbits.RC14 = 0;
+    Nop();
+    LATCbits.LATC14 = 0;
+    Nop();
+    TRISCbits.TRISC14 = 1;
     Nop();
     
     ADPCFG = 0XFFFF; // Deshabilitar el modo analogico

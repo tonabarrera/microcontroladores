@@ -15,13 +15,10 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>principal.c</itemPath>
       <itemPath>LCD.s</itemPath>
-<<<<<<< HEAD
+      <itemPath>principal.c</itemPath>
       <itemPath>funciones.s</itemPath>
       <itemPath>retardos.s</itemPath>
-=======
->>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -40,7 +37,7 @@
         <platformTool>Simulator</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.33</languageToolchainVersion>
-        <platform>4</platform>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
