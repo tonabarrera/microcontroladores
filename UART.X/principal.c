@@ -90,7 +90,7 @@ void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
 
 unsigned char datoRCU;
-unsigned char dato;
+ char dato[] = "Defaul";
 
 int main (void) {
     iniPerifericos();
@@ -114,9 +114,9 @@ int main (void) {
     comandoLCD(0xC); // Desactivar el cursor
 
     for(;EVER;) {
-        if (datoRCU) {
+        if (datoRCU == 1) {
             busyFlag();
-            datoLCD(dato);
+            imprimeLCD(dato);
             datoRCU = 0;
         }
     }
