@@ -21,13 +21,14 @@ int main()
 
 	fd_serie = config_serial( "/dev/ttyUSB0", B9600 );
 	printf("serial abierto con descriptor: %d\n", fd_serie);
-
+	//write(fd_serie, &dato, 1);
 	//Leemos N datos del UART
 	for( ; EVER; ) {
 		//read (fd_serie, &dato, 1);
 		scanf("%c", &dato);
-		write(fd_serie, &dato, 1);
-		sleep(1);
+		if (dato > 31)
+			write(fd_serie, &dato, 1);
+		//sleep(1);
 		printf("%c", dato);
 	}
 	close( fd_serie );

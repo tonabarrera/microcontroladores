@@ -14,4 +14,4 @@
 /UART.X/nbproject/private/
 *.out
 *.o
-
+/serial
