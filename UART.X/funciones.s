@@ -8,10 +8,11 @@
 ; */
 __U1RXInterrupt:
     PUSH W0
-    MOV U1RXREG,    W0
-    MOV.B WREG,	    _dato
+    
+    ;MOV U1RXREG,    W0
+    ;MOV W0,	    _dato
     MOV #1,	    W0
-    MOV.B WREG,	    _datoRCU
+    MOV W0,	    _datoRCU
     
     BCLR IFS0,	    #U1RXIF
     POP W0

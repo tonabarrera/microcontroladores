@@ -23,13 +23,12 @@ int main()
 	printf("serial abierto con descriptor: %d\n", fd_serie);
 
 	//Leemos N datos del UART
-	dato = 0x55;
 	for( ; EVER; ) {
 		//read (fd_serie, &dato, 1);
 		scanf("%c", &dato);
-		printf("%c", dato);
-		write(fd_serie, &dato, 1 );
+		write(fd_serie, &dato, 1);
 		sleep(1);
+		printf("%c", dato);
 	}
 	close( fd_serie );
 
