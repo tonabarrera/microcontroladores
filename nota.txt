@@ -27,6 +27,8 @@ Vamo a usar un FT232 que hace la conversion de USB a UART considerando los nivel
 
 Para trabajar wifi utilizaremos comunicacion de UART a UART
 
+<<<<<<< HEAD
+=======
 Preguntar de cuatro en cuatro debido a la estructura FIFO todo gracias a nuestro modelo de UART
 transmcion de 9 bits para 485
 
@@ -50,3 +52,4 @@ En el registro espejo debemos prender la interrupcion de recepcion
 Finalmente prendo UART
 
 La LCD es un periferico demasiado lento
+>>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3

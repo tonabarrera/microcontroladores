@@ -90,7 +90,7 @@ void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
 
 unsigned char datoRCU;
-char dato[] = "Default";
+ char dato[] = "Defaul";
 
 int main (void) {
     iniPerifericos();
@@ -117,7 +117,6 @@ int main (void) {
         if (datoRCU == 1) {
             busyFlag();
             imprimeLCD(dato);
-            busyFlag();
             datoRCU = 0;
         }
     }

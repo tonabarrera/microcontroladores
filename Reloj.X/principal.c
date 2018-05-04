@@ -88,7 +88,17 @@ void busyFlag( void );
 void datoLCD(unsigned char);
 void imprimeLCD(char[]);
 void comandoLCD(unsigned char);
+void PASO_DE_LA_MUERTE(void);
 
+<<<<<<< HEAD
+char USEG;
+char DSEG;
+char UMIN;
+char DMIN;
+char UHR;
+char DHR;
+char cadena[9]; //00:00:00/0
+=======
 unsigned char useg;
 unsigned char dseg;
 unsigned char umin;
@@ -96,13 +106,52 @@ unsigned char dmin;
 unsigned char uhr;
 unsigned char dhr;
 unsigned char cadena[9]; //00:00:00/0
+>>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3
 
 int main (void) {
     short comando = 0xC; // para que no aparezca el cursor
     iniPerifericos();
     iniLCD8bits();
+    
+    USEG = 5;
+    DSEG = 5;
+    UMIN = 9;
+    DMIN = 5;
+    UHR = 3;
+    DHR = 2;
+    
     iniInterrupciones();
     
+<<<<<<< HEAD
+     // Aqui se debe de mandar a llamar al paso de la muerte
+    PASO_DE_LA_MUERTE();
+    // EN_RTC
+    
+    IFS0bits.T1IF = 0;
+    IEC0bits.T1IE = 1;
+    T1CONbits.TON = 1;
+    
+    busyFlag();
+    comandoLCD(comando);
+    
+    for(;EVER;) {
+        // Aqui solo se manda a imprimir la cadena
+        cadena[0] = DHR + 0x30;
+        cadena[1] = UHR + 0x30;
+        cadena[2] = ':';
+        cadena[3] = DMIN + 0x30;
+        cadena[4] = UMIN + 0x30;
+        cadena[5] = ':';
+        cadena[6] = DSEG + 0x30;
+        cadena[7] = USEG + 0x30;
+        cadena[8] = 0;
+       
+        busyFlag();
+        imprimeLCD(cadena);
+        
+        busyFlag();
+        comandoLCD(0x80);
+=======
     // Aqui se debe de mandar a llamar al paso de la muerte
     // EN_RTC
     
@@ -134,6 +183,7 @@ int main (void) {
         comandoLCD(0x87);
         busyFlag();
         comandoLCD(comando);
+>>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3
 
         Nop();
     }
