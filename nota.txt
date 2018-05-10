@@ -27,8 +27,6 @@ Vamo a usar un FT232 que hace la conversion de USB a UART considerando los nivel
 
 Para trabajar wifi utilizaremos comunicacion de UART a UART
 
-<<<<<<< HEAD
-=======
 Preguntar de cuatro en cuatro debido a la estructura FIFO todo gracias a nuestro modelo de UART
 transmcion de 9 bits para 485
 
@@ -51,5 +49,24 @@ En el registro espejo debemos prender la interrupcion de recepcion
 
 Finalmente prendo UART
 
+
 La LCD es un periferico demasiado lento
->>>>>>> 14a515dceb6764de0505c3347d6e03c7f64411b3
+
+
+fs = fT3IF (Frecuencia del timer 3 debe de ser igual a la de muestreo)
+
+Primero configuro todo y después enciendo todos los perifericos alv
+
+Calcular valor de preescala para el timer tres con oscilador interno
+
+Fin de conversion activa la bandera ADIF o la bandra ADON
+Preguntar sobre el bit de conversion en un ciclo infinito hasta que el valor cambie (polling)
+
+Despues del fin de conversion se debe de calcular el siguiente voltaje analogico
+ADCON1 = 0x0044
+
+El modo de escaneo se utiliza cuando tenemos muchos sensores
+Por cada muestra tendremos una interrupción en el ADC, esto se modificara en caso de poner un filtrado
+Utilizaremos los canales simples
+ADCON2 = 0x6000
+Tiempo total de conversion es: SAMC + tiempo conversion
