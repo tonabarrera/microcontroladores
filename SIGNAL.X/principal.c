@@ -80,45 +80,39 @@ int y_input[MUESTRAS] __attribute__ ((space(ymemory)));
 /********************************************************************************/
 int var1 __attribute__ ((near));
 
-void iniPerifericos( void );
+void iniPuertos( void );
 void iniInterrupciones( void );
 
-void iniLCD8bits( void );
-void busyFlag( void );
-void datoLCD(unsigned char);
-void imprimeLCD(char[]);
-void comandoLCD(unsigned char);
-
-unsigned char datoRCU;
- char dato[] = "Defaul";
-
 int main (void) {
-    iniPerifericos();
+    iniPuertos();
     
-    iniLCD8bits();
+    // TIMER3 fT3IF = 512 Hz con FCY
+    // T3CON = x
+    // PR3 = y
+    TMR3 = 0;
     
-    // Configurar el UART
+    // UART1 baudios = 19200
     U1MODE = 0x0420;
-    U1STA = 0x8000;
-    U1BRG = 11;
-    datoRCU = 0;
+    U1STA = 0X8000;
     
-    // Habilitar interrupcion
-    IFS0bits.U1RXIF = 0;
-    IEC0bits.U1RXIE = 1;
+    // ADC
+    ADCON1 = 0x0044;
+    ADCON2 = 0x6000;
+    ADCON3 = 0x0F02;
+    ADCHS = 2;
+    ADPCFG = 0xFFF8;
+    ADCSSL = 0;
     
-    // Habilitar UART
+    iniInterrupciones();
+    
+    // Habilitacion de perifericos
+    T3CONbits.TON = 1;
     U1MODEbits.UARTEN = 1;
+    U1STAbits.UTXEN = 1;
+    ADCON1bits.ADON = 1;
     
-    busyFlag();
-    //comandoLCD(0xC); // Desactivar el cursor
-
     for(;EVER;) {
-        if (datoRCU == 1) {
-            busyFlag();
-            imprimeLCD(dato);
-            datoRCU = 0;
-        }
+        Nop();
     }
     
     /*---------------------FIN VERSION 2---------------------*/
@@ -129,33 +123,38 @@ int main (void) {
 /* PARAMETROS: NINGUNO                                                      */
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
-void iniInterrupciones( void )
-{
-    // Habilitacion de interrupcion del periférico 1
-    // Habilitacion de interrupcion del periférico 2
-    // Habilitacion de interrupcion del periférico 3
-    // IFS0bits.T1IF = 0;
-    // IEC0bits.T1IE = 1;
+void iniInterrupciones( void ) {
+    IFS0bits.T3IF = 0;
+    IEC0bits.T3IE = 1;
+    IFS0bits.ADIF = 0;
+    IEC0bits.ADIE = 1;
 }
 /****************************************************************************/
-/* DESCRICION:	ESTA RUTINA INICIALIZA LOS PERIFERICOS						*/
+/* DESCRICION:	ESTA RUTINA INICIALIZA LOS PUERTOS						*/
 /* PARAMETROS: NINGUNO                                                      */
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
-void iniPerifericos( void )
+void iniPuertos( void )
 {
-    PORTB = 0;
+    PORTBbits.RB0 = 0;
     Nop();
-    LATB = 0;
+    LATBbits.LATB0 = 0;
     Nop();
-    TRISB = 0;
+    TRISBbits.TRISB0 = 1;
     Nop();
     
-    PORTD= 0;
+    PORTBbits.RB1 = 0;
     Nop();
-    LATD = 0;
+    LATBbits.LATB1 = 0;
     Nop();
-    TRISD = 0;
+    TRISBbits.TRISB1 = 1;
+    Nop();
+    
+    PORTBbits.RB2 = 0;
+    Nop();
+    LATBbits.LATB2 = 0;
+    Nop();
+    TRISBbits.TRISB2 = 1;
     Nop();
     
     PORTCbits.RC13 = 0;
@@ -172,5 +171,5 @@ void iniPerifericos( void )
     TRISCbits.TRISC14 = 1;
     Nop();
     
-    ADPCFG = 0XFFFF; // Deshabilitar el modo analogico
+    //ADPCFG = 0XFFFF;  // ¿Deshabilitar el modo analogico?
 }
