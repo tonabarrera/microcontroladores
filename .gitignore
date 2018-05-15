@@ -16,3 +16,5 @@
 *.o
 /serial
 /SIGNAL.X/nbproject/private/
+/SIGNAL.X/build/default/
+/SIGNAL.X/dist/default/

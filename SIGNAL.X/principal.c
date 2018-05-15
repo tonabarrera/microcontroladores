@@ -134,8 +134,7 @@ void iniInterrupciones( void ) {
 /* PARAMETROS: NINGUNO                                                      */
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
-void iniPuertos( void )
-{
+void iniPuertos( void ) {
     PORTBbits.RB0 = 0;
     Nop();
     LATBbits.LATB0 = 0;
@@ -169,6 +168,13 @@ void iniPuertos( void )
     LATCbits.LATC14 = 0;
     Nop();
     TRISCbits.TRISC14 = 1;
+    Nop();
+    
+    PORTDbits.RD0 = 0;
+    Nop();
+    LATDbits.LATD0 = 0;
+    Nop();
+    TRISDbits.TRISD0 = 0;
     Nop();
     
     //ADPCFG = 0XFFFF;  // ¿Deshabilitar el modo analogico?
