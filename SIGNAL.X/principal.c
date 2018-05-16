@@ -86,7 +86,7 @@ void iniInterrupciones( void );
 int main (void) {
     iniPuertos();
     
-    // TIMER3 fT3IF = 512 Hz con FCY
+    // TIMER3 fT3IF = 512 Hz con FCY, la preescala es 1
     // T3CON = x
     // PR3 = y
     TMR3 = 0;
