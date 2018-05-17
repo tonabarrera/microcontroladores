@@ -94,6 +94,8 @@ int main (void) {
     // UART1 baudios = 19200
     U1MODE = 0x0420;
     U1STA = 0X8000;
+    U1BRG = 5;
+    
     
     // ADC
     ADCON1 = 0x0044;
