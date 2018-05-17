@@ -21,16 +21,21 @@ int main() {
 	printf("serial abierto con descriptor: %d\n", fd_serie);
 	//write(fd_serie, &dato, 1);
 	//Leemos N datos del UART
-	for(int cont = 0; cont < 2048;) {
+	int cont = 0;
+	while(cont < 2048) {
 		read(fd_serie, &dato, 1);
-		if (dato & 128)
+		if (dato & 0x0080)
 			muestras[cont++] += dato << 6;
 		else
 			muestras[cont] = dato;
+		//sleep
 	}
-	int fd_archivo = open("./muestras.txt", O_WRONLY | O_CREAT);
-	write(fd_archivo, muestras, 2048*sizeof(short));
-	close(fd_archivo);
+
+	FILE *file = fopen("muestras.txt", "w");
+	for (int i = 0; i < cont; i++)
+		fprintf(file, "%d\n", muestras[i]);
+
+	fclose(file);
 	close(fd_serie);
 	return 0;
 }
