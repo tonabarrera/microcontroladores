@@ -2,8 +2,6 @@
 	
 	.global __T3Interrupt
 	.global __ADCInterrupt
-	.global _dato
-	.global _datoRCU
 
 ;/**@brief INTERRUPCION DEL ADC
 ; */

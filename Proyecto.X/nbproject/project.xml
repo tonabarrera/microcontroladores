@@ -6,12 +6,12 @@
             <name>Proyecto</name>
             <creation-uuid>4f6f02b4-f83a-4e5b-b711-6af1b539a622</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions/>
-            <header-extensions/>
-            <asminc-extensions/>
-            <make-dep-projects/>
+            <header-extensions>h</header-extensions>
+            <asminc-extensions>inc</asminc-extensions>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
+            <make-dep-projects/>
         </data>
     </configuration>
 </project>
