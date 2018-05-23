@@ -13,38 +13,30 @@
 int config_serial ( char *, speed_t );
 
 int main() {
-	int fd_serie;
-	unsigned short dato;
-	unsigned short muestras[2048];
+    int fd_serie;
+    unsigned short dato;
+    unsigned short muestras[2048];
 
-	fd_serie = config_serial( "/dev/ttyUSB0", B9600);
-	printf("serial abierto con descriptor: %d\n", fd_serie);
-	//write(fd_serie, &dato, 1);
-	//Leemos N datos del UART
-	int cont = 0;
-	short otro = 0;
-	while(1) {
-		otro = 0;
-		read(fd_serie, &dato, 1);
-		if (dato & 0x0080){
-			//muestras[cont] |= dato << 6;
-			otro |= (dato & 0x003F) << 6;
-			printf("ALTA: %d\n", otro);
-		} else{
-			otro = dato;
-			//muestras[cont] = dato;
-			printf("%s\n", "BAJA");
-		}
-		//sleep
-	}
+    fd_serie = config_serial( "/dev/ttyUSB0", B19200);
+    printf("serial abierto con descriptor: %d\n", fd_serie);
+    int cont = 0;
+    while (cont < 2048) {
+        printf("%s\n", "Leyendo...");
+        read(fd_serie, &dato, 1);
+        if (dato & 0x0080)
+            muestras[cont++] |= (dato & 0x003F) << 6;
+        else
+            muestras[cont] = dato;
+        //sleep
+    }
 
-	FILE *file = fopen("muestras.txt", "w");
-	for (int i = 0; i < cont; i++)
-		fprintf(file, "%d\n", muestras[i]);
+    FILE *file = fopen("muestras.txt", "w");
+    for (int i = 0; i < cont; i++)
+        fprintf(file, "%d\n", muestras[i]);
 
-	fclose(file);
-	close(fd_serie);
-	return 0;
+    fclose(file);
+    close(fd_serie);
+    return 0;
 }
 
 /** @brief: Esta funcion Configura la interfaz serie
@@ -56,77 +48,77 @@ int main() {
  */
 int config_serial( char *dispositivo_serial, speed_t baudios )
 {
-	struct termios newtermios;
-  	int fd;
+    struct termios newtermios;
+    int fd;
 /*
  * Se abre un descriptor de archivo para manejar la interfaz serie
  * O_RDWR - Se abre el descriptor para lectura y escritura
  * O_NOCTTY - El dispositivo terminal no se convertira en el terminal del proceso
  * ~O_NONBLOCK - Se hace bloqueante la lectura de datos
  */
-  	fd = open( dispositivo_serial, (O_RDWR | O_NOCTTY) & ~O_NONBLOCK );
-	if( fd == -1 )
-	{
-		printf("Error al abrir el dispositivo tty \n");
-		exit( EXIT_FAILURE );
-  	}
+    fd = open( dispositivo_serial, (O_RDWR | O_NOCTTY) & ~O_NONBLOCK );
+    if( fd == -1 )
+    {
+        printf("Error al abrir el dispositivo tty \n");
+        exit( EXIT_FAILURE );
+    }
 /*
  * cflag - Proporciona los indicadores de modo de control
- *	CBAUD	- Velocidad de transmision en baudios.
- * 	CS8	- Especifica los bits por dato, en este caso 8
- * 	CLOCAL 	- Ignora las lineas de control del modem: CTS y RTS
- * 	CREAD  	- Habilita el receptor del UART
+ *  CBAUD   - Velocidad de transmision en baudios.
+ *  CS8 - Especifica los bits por dato, en este caso 8
+ *  CLOCAL  - Ignora las lineas de control del modem: CTS y RTS
+ *  CREAD   - Habilita el receptor del UART
  * iflag - proporciona los indicadores de modo de entrada
- * 	IGNPAR 	- Ingnora errores de paridad, es decir, comunicación sin paridad
+ *  IGNPAR  - Ingnora errores de paridad, es decir, comunicación sin paridad
  * oflag - Proporciona los indicadores de modo de salida
  * lflag - Proporciona indicadores de modo local
- * 	TCIOFLUSH - Elimina datos recibidos pero no leidos, como los escritos pero no transmitidos
- * 	~ICANON - Establece modo no canonico, en este modo la entrada esta disponible inmediatamente
- * cc[]	 - Arreglo que define caracteres especiales de control
- *	VMIN > 0, VTIME = 0 - Bloquea la lectura hasta que el numero de bytes (1) esta disponible
+ *  TCIOFLUSH - Elimina datos recibidos pero no leidos, como los escritos pero no transmitidos
+ *  ~ICANON - Establece modo no canonico, en este modo la entrada esta disponible inmediatamente
+ * cc[]  - Arreglo que define caracteres especiales de control
+ *  VMIN > 0, VTIME = 0 - Bloquea la lectura hasta que el numero de bytes (1) esta disponible
  */
-	newtermios.c_cflag 	= CBAUD | CS8 | CLOCAL | CREAD;
-  	newtermios.c_iflag 	= IGNPAR;
-  	newtermios.c_oflag	= 0;
-  	newtermios.c_lflag 	= TCIOFLUSH | ~ICANON;
-  	newtermios.c_cc[VMIN]	= 1;
-  	newtermios.c_cc[VTIME]	= 0;
+    newtermios.c_cflag  = CBAUD | CS8 | CLOCAL | CREAD;
+    newtermios.c_iflag  = IGNPAR;
+    newtermios.c_oflag  = 0;
+    newtermios.c_lflag  = TCIOFLUSH | ~ICANON;
+    newtermios.c_cc[VMIN]   = 1;
+    newtermios.c_cc[VTIME]  = 0;
 
 // Configura la velocidad de salida del UART
-  	if( cfsetospeed( &newtermios, baudios ) == -1 )
-	{
-		printf("Error al establecer velocidad de salida \n");
-		exit( EXIT_FAILURE );
-  	}
+    if( cfsetospeed( &newtermios, baudios ) == -1 )
+    {
+        printf("Error al establecer velocidad de salida \n");
+        exit( EXIT_FAILURE );
+    }
 // Configura la velocidad de entrada del UART
-	if( cfsetispeed( &newtermios, baudios ) == -1 )
-	{
-		printf("Error al establecer velocidad de entrada \n" );
-		exit( EXIT_FAILURE );
-	}
+    if( cfsetispeed( &newtermios, baudios ) == -1 )
+    {
+        printf("Error al establecer velocidad de entrada \n" );
+        exit( EXIT_FAILURE );
+    }
 // Limpia el buffer de entrada
-	if( tcflush( fd, TCIFLUSH ) == -1 )
-	{
-		printf("Error al limpiar el buffer de entrada \n" );
-		exit( EXIT_FAILURE );
-	}
+    if( tcflush( fd, TCIFLUSH ) == -1 )
+    {
+        printf("Error al limpiar el buffer de entrada \n" );
+        exit( EXIT_FAILURE );
+    }
 // Limpia el buffer de salida
-	if( tcflush( fd, TCOFLUSH ) == -1 )
-	{
-		printf("Error al limpiar el buffer de salida \n" );
-		exit( EXIT_FAILURE );
-	}
+    if( tcflush( fd, TCOFLUSH ) == -1 )
+    {
+        printf("Error al limpiar el buffer de salida \n" );
+        exit( EXIT_FAILURE );
+    }
 /*
  * Se establece los parametros de terminal asociados con el
  * descriptor de archivo fd utilizando la estructura termios
  * TCSANOW - Cambia los valores inmediatamente
  */
-	if( tcsetattr( fd, TCSANOW, &newtermios ) == -1 )
-	{
-		printf("Error al establecer los parametros de la terminal \n" );
-		exit( EXIT_FAILURE );
-	}
+    if( tcsetattr( fd, TCSANOW, &newtermios ) == -1 )
+    {
+        printf("Error al establecer los parametros de la terminal \n" );
+        exit( EXIT_FAILURE );
+    }
 //Retorna el descriptor de archivo
-	return fd;
+    return fd;
 }
 
