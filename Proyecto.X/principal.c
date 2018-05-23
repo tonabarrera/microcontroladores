@@ -86,32 +86,34 @@ void iniInterrupciones( void );
 int main (void) {
     iniPuertos();
     
-    // TIMER3 fT3IF = 512 Hz con FCY, la preescala es 1
-    // T3CON = x
-    // PR3 = y
+    // TIMER3 fT3IF = 512 Hz con FCY, la preescala es 1 (PENDIENTE)
+    T3CON = 0;
+    PR3 = 0;
     TMR3 = 0;
     
-    // UART1 baudios = 19200
+    // UART1 baudios = 115200 (PENDIENTE)
     U1MODE = 0x0420;
     U1STA = 0X8000;
     U1BRG = 5;
     
-    
-    // ADC
-    ADCON1 = 0x0044;
-    ADCON2 = 0x0000; //0x6000 referencias externas
-    ADCON3 = 0x0F02;
-    ADCHS = 2;
-    ADPCFG = 0xFFF8;
-    ADCSSL = 0;
+    // UART2 (PENDIENTE)
+    U2MODE = 0x0420;
+    U2STA = 0x8000;
+    U2BRG = 11;
     
     iniInterrupciones();
+    
+    // INICIALIZAR WIFI
+    
+    // CONFIGURAR WIFI
+
     
     // Habilitacion de perifericos
     T3CONbits.TON = 1;
     U1MODEbits.UARTEN = 1;
     U1STAbits.UTXEN = 1;
-    ADCON1bits.ADON = 1;
+    U2MODEbits.UARTEN = 1;
+    U2STAbits.UTXEN = 1;
     
     for(;EVER;) {
         Nop();
@@ -137,27 +139,8 @@ void iniInterrupciones( void ) {
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
 void iniPuertos( void ) {
-    PORTBbits.RB0 = 0;
-    Nop();
-    LATBbits.LATB0 = 0;
-    Nop();
-    TRISBbits.TRISB0 = 1;
-    Nop();
-    
-    PORTBbits.RB1 = 0;
-    Nop();
-    LATBbits.LATB1 = 0;
-    Nop();
-    TRISBbits.TRISB1 = 1;
-    Nop();
-    
-    PORTBbits.RB2 = 0;
-    Nop();
-    LATBbits.LATB2 = 0;
-    Nop();
-    TRISBbits.TRISB2 = 1;
-    Nop();
-    
+    // CONFIGURACION DEL UART1
+    // Tx
     PORTCbits.RC13 = 0;
     Nop();
     LATCbits.LATC13 = 0;
@@ -165,6 +148,7 @@ void iniPuertos( void ) {
     TRISCbits.TRISC13 = 0;
     Nop();
     
+    // Rx
     PORTCbits.RC14 = 0;
     Nop();
     LATCbits.LATC14 = 0;
@@ -172,12 +156,37 @@ void iniPuertos( void ) {
     TRISCbits.TRISC14 = 1;
     Nop();
     
-    PORTDbits.RD0 = 0;
+    //CONFIGURACION DEL UART2 (WIFI)
+    // Tx
+    PORTFbits.RF5 = 0;
     Nop();
-    LATDbits.LATD0 = 0;
+    LATFbits.LATF5 = 0;
     Nop();
-    TRISDbits.TRISD0 = 0;
+    TRISFbits.TRISF5 = 1;
     Nop();
     
-    //ADPCFG = 0XFFFF;  // ¿Deshabilitar el modo analogico?
+    // Rx
+    PORTFbits.RF4 = 0;
+    Nop();
+    LATFbits.LATF4 = 0;
+    Nop();
+    TRISFbits.TRISF4 = 0;
+    Nop();
+    
+    // CS
+    PORTBbits.RB8 = 0;
+    Nop();
+    LATBbits.LATB8 = 0;
+    Nop();
+    TRISBbits.TRISB8 = 0;
+    
+    // RST
+    PORTDbits.RD1 = 0;
+    Nop();
+    LATDbits.LATD1 = 0;
+    Nop();
+    TRISDbits.TRISD1 = 0;
+    
+    ADPCFG = 0XFFFF;  // ¿Deshabilitar el modo analogico?
+    Nop();
 }
