@@ -28,11 +28,12 @@ int main() {
 		read(fd_serie, &dato, 1);
 		if (dato & 0x0080){
 			//muestras[cont] |= dato << 6;
-			otro |= dato << 6;
-			printf("%d\n", otro);
+			otro |= (dato & 0x003F) << 6;
+			printf("ALTA: %d\n", otro);
 		} else{
 			otro = dato;
 			//muestras[cont] = dato;
+			printf("%s\n", "BAJA");
 		}
 		//sleep
 	}
