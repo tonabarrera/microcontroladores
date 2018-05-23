@@ -22,12 +22,18 @@ int main() {
 	//write(fd_serie, &dato, 1);
 	//Leemos N datos del UART
 	int cont = 0;
-	while(cont < 2048) {
+	short otro = 0;
+	while(1) {
+		otro = 0;
 		read(fd_serie, &dato, 1);
-		if (dato & 0x0080)
-			muestras[cont++] += dato << 6;
-		else
-			muestras[cont] = dato;
+		if (dato & 0x0080){
+			//muestras[cont] |= dato << 6;
+			otro |= dato << 6;
+			printf("%d\n", otro);
+		} else{
+			otro = dato;
+			//muestras[cont] = dato;
+		}
 		//sleep
 	}
 

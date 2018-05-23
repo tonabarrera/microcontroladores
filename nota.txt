@@ -9,6 +9,7 @@ tomamos la preescala que genere el menor error
 COMUNICACION ASINCRONA
 no hay comunicacion de maestro a esclavo por medio de un reloj, cada uno tiene el suyo
 
+El maestro genera la señal de reloj en la comunicacion serial
 Para la comunicacion serial tenemos el estandar RS232, define:
     - Formatos de trama
     - Niveles de voltaje
@@ -67,6 +68,8 @@ ADCON1 = 0x0044
 
 El modo de escaneo se utiliza cuando tenemos muchos sensores
 Por cada muestra tendremos una interrupción en el ADC, esto se modificara en caso de poner un filtrado
+
 Utilizaremos los canales simples
 ADCON2 = 0x6000
 Tiempo total de conversion es: SAMC + tiempo conversion
+

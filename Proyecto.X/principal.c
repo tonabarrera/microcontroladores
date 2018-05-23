@@ -87,8 +87,8 @@ int main (void) {
     iniPuertos();
     
     // TIMER3 fT3IF = 512 Hz con FCY, la preescala es 1
-    T3CON = 0x0000;
-    PR3 = 3600;
+    // T3CON = x
+    // PR3 = y
     TMR3 = 0;
     
     // UART1 baudios = 19200
