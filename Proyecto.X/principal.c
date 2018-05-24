@@ -82,6 +82,8 @@ int var1 __attribute__ ((near));
 
 void iniPuertos( void );
 void iniInterrupciones( void );
+void RETARDO_1S(void);
+void comandoAT(unsigned char []);
 
 int main (void) {
     iniPuertos();
@@ -104,9 +106,25 @@ int main (void) {
     iniInterrupciones();
     
     // INICIALIZAR WIFI
+    PORTBbits.RB8 = 1;
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    PORTDbits.RD1 = 1;
+    RETARDO_1S();
+    PORTDbits.RD1 = 0;
+    RETARDO_1S();
+    PORTDbits.RD1 = 1;
+    RETARDO_1S();
     
     // CONFIGURAR WIFI
-
+    comandoAT("AT+RST");
+    comandoAT("AT+CWMODE=1");
+    comandoAT("AT+CIPMUX=0"); // CONEXION MULTIPLE
+    comandoAT("AT+CWJAP=\"SSID\",\"PSWD\" ");
+    comandoAT("AT+CIFSR");
+    comandoAT("AT+CIPSTART=\"TCP\",\"IP\",PUERTO");
+    comandoAT("AT+CIPSEND=4");
     
     // Habilitacion de perifericos
     T3CONbits.TON = 1;
