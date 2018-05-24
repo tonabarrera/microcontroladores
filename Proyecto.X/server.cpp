@@ -1,24 +1,37 @@
 #include <stdio.h>
 #include <netdb.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 #include <cstring>
 #include <unistd.h>
 
 #define PUERTO "7200"
 #define BACKLOG 10 // Peticiones pendientes
+#define TAM_BUFFER 1024
+
+// Obtiene la direccion IPv4 o IPv6
+void *get_in_addr(struct sockaddr *sa) {
+    if (sa->sa_family == AF_INET)
+        return &(((struct sockaddr_in *)sa)->sin_addr);
+    return &(((struct sockaddr_in6 *)sa)->sin6_addr);
+}
 
 int main(int argc, char const *argv[]) {
-    int sockfd, new_fd;
+    int sockfd, new_fd; // servidor y cliente
     struct sockaddr_storage their_addr; // connector's address information
     socklen_t sin_size;
     int yes = 1;
+    char s[INET6_ADDRSTRLEN];
+    unsigned char buffer[TAM_BUFFER];
     int rv;
     struct addrinfo hints, *servinfo, *p;
+    int numbytes;
 
-    memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;
+    memset(&buffer, 0, TAM_BUFFER);
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE;
+    hints.ai_flags = AI_PASSIVE; // Usar mi IP
 
 
     if ((rv = getaddrinfo(NULL, PUERTO, &hints, &servinfo)) != 0) {
@@ -33,7 +46,7 @@ int main(int argc, char const *argv[]) {
             perror("server: socket");
             continue;
         }
-        // Asociar el socket al puerto
+        
         if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
             perror("setsockopt");
             exit(EXIT_FAILURE);
@@ -58,6 +71,8 @@ int main(int argc, char const *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    printf("%s\n", "Esperando...");
+
     while (true) {
         sin_size = sizeof(their_addr);
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
@@ -65,6 +80,12 @@ int main(int argc, char const *argv[]) {
             perror("accept");
             continue;
         }
+
+        inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof(s));
+        printf("%s %s\n", "server: got connection from ", s);
+        numbytes = read(new_fd, buffer, TAM_BUFFER);
+        printf("LEIDOS %d, BUFFER: %s\n", numbytes, buffer);
+        close(new_fd);
     }
 
     return 0;

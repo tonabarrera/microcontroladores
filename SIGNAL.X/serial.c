@@ -20,20 +20,20 @@ int main() {
     fd_serie = config_serial( "/dev/ttyUSB0", B19200);
     printf("serial abierto con descriptor: %d\n", fd_serie);
     int cont = 0;
+    printf("%s\n", "Leyendo...");
     while (cont < 2048) {
-        printf("%s\n", "Leyendo...");
         read(fd_serie, &dato, 1);
         if (dato & 0x0080)
             muestras[cont++] |= (dato & 0x003F) << 6;
         else
             muestras[cont] = dato;
-        //sleep
     }
-
     FILE *file = fopen("muestras.txt", "w");
     for (int i = 0; i < cont; i++)
         fprintf(file, "%d\n", muestras[i]);
-
+    
+    printf("%s\n", "TERMINO");
+    
     fclose(file);
     close(fd_serie);
     return 0;
