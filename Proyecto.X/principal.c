@@ -83,25 +83,25 @@ int var1 __attribute__ ((near));
 void iniPuertos( void );
 void iniInterrupciones( void );
 void RETARDO_1S(void);
-void comandoAT(unsigned char []);
+void enviarAT(char []); // Talvez es unsigned
 
 int main (void) {
     iniPuertos();
     
     // TIMER3 fT3IF = 512 Hz con FCY, la preescala es 1 (PENDIENTE)
-    T3CON = 0;
-    PR3 = 0;
-    TMR3 = 0;
+    //T3CON = 0;
+    //PR3 = 0;
+    //TMR3 = 0;
     
     // UART1 baudios = 115200 (PENDIENTE)
     U1MODE = 0x0420;
     U1STA = 0X8000;
-    U1BRG = 5;
+    U1BRG = 0;
     
     // UART2 (PENDIENTE)
     U2MODE = 0x0420;
     U2STA = 0x8000;
-    U2BRG = 11;
+    U2BRG = 0;
     
     iniInterrupciones();
     
@@ -118,18 +118,21 @@ int main (void) {
     RETARDO_1S();
     
     // CONFIGURAR WIFI
-    comandoAT("AT+RST");
-    comandoAT("AT+CWMODE=1");
-    comandoAT("AT+CIPMUX=0"); // CONEXION MULTIPLE
-    comandoAT("AT+CWJAP=\"SSID\",\"PSWD\" ");
-    comandoAT("AT+CIFSR");
-    comandoAT("AT+CIPSTART=\"TCP\",\"IP\",PUERTO");
-    comandoAT("AT+CIPSEND=4");
+    enviarAT("AT+RST\r\n");
+    enviarAT("AT+CWMODE=1\r\n"); // modo softap
+    enviarAT("AT+CIPMUX=0\r\n"); // conexion simple
+    enviarAT("AT+CWJAP=\"SSID\",\"PSWD\"\r\n");
+    enviarAT("AT+CIFSR"); // optener ip local  
+    enviarAT("AT+CIPSTART=\"TCP\",\"IP\",PUERTO\r\n");
+    enviarAT("AT+CIPSEND=4\r\n"); // cantidad de bytes a mandar
     
     // Habilitacion de perifericos
-    T3CONbits.TON = 1;
+    // Habilitar TIMER3
+    //T3CONbits.TON = 1;
+    // Habilitar UART1
     U1MODEbits.UARTEN = 1;
     U1STAbits.UTXEN = 1;
+    // Habilitar UART2
     U2MODEbits.UARTEN = 1;
     U2STAbits.UTXEN = 1;
     
@@ -146,10 +149,12 @@ int main (void) {
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
 void iniInterrupciones( void ) {
-    IFS0bits.T3IF = 0;
-    IEC0bits.T3IE = 1;
-    IFS0bits.ADIF = 0;
-    IEC0bits.ADIE = 1;
+    // TIMER 3
+    //IFS0bits.T3IF = 0;
+    //IEC0bits.T3IE = 1;
+    // UART2
+    IFS1bits.U2RXIF = 0;
+    IEC1bits.U2RXIE = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PUERTOS						*/
@@ -174,7 +179,7 @@ void iniPuertos( void ) {
     TRISCbits.TRISC14 = 1;
     Nop();
     
-    //CONFIGURACION DEL UART2 (WIFI)
+    //CONFIGURACION DEL UART2 (WIFI, creo que va al contrario)
     // Tx
     PORTFbits.RF5 = 0;
     Nop();
@@ -197,14 +202,24 @@ void iniPuertos( void ) {
     LATBbits.LATB8 = 0;
     Nop();
     TRISBbits.TRISB8 = 0;
-    
+    Nop();
+
     // RST
     PORTDbits.RD1 = 0;
     Nop();
     LATDbits.LATD1 = 0;
     Nop();
     TRISDbits.TRISD1 = 0;
+    Nop();
     
-    ADPCFG = 0XFFFF;  // ¿Deshabilitar el modo analogico?
+    // TIMER 3 de prueba
+    //PORTDbits.RD0 = 0;
+    //Nop();
+    //LATDbits.LATD0 = 0;
+    //Nop();
+    //TRISDbits.TRISD0 = 0;
+    //Nop();
+    
+    ADPCFG = 0XFFFF;  // Deshabilitar el modo analogico
     Nop();
 }
