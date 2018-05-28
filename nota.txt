@@ -75,3 +75,4 @@ Tiempo total de conversion es: SAMC + tiempo conversion
 
 LDAC.- Sirve para controlar la carga
 SPI.- Son dos registros conectados de forma circular
+Nuestro DAC es de tipo A

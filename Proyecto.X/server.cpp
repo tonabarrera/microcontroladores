@@ -7,7 +7,7 @@
 
 #define PUERTO "7200"
 #define BACKLOG 10 // Peticiones pendientes
-#define TAM_BUFFER 1024
+#define TAM_BUFFER 4
 
 // Obtiene la direccion IPv4 o IPv6
 void *get_in_addr(struct sockaddr *sa) {
