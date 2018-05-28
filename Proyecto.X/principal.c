@@ -83,7 +83,7 @@ int var1 __attribute__ ((near));
 void iniPuertos( void );
 void iniInterrupciones( void );
 void RETARDO_1S(void);
-void enviarAT(char []); // Talvez es unsigned
+void comandoAT(char []); // Talvez es unsigned
 
 int main (void) {
     iniPuertos();
@@ -118,13 +118,16 @@ int main (void) {
     RETARDO_1S();
     
     // CONFIGURAR WIFI
-    enviarAT("AT+RST\r\n");
-    enviarAT("AT+CWMODE=1\r\n"); // modo softap
-    enviarAT("AT+CIPMUX=0\r\n"); // conexion simple
-    enviarAT("AT+CWJAP=\"SSID\",\"PSWD\"\r\n");
-    enviarAT("AT+CIFSR"); // optener ip local  
-    enviarAT("AT+CIPSTART=\"TCP\",\"IP\",PUERTO\r\n");
-    enviarAT("AT+CIPSEND=4\r\n"); // cantidad de bytes a mandar
+    comandoAT("AT+RST\r\n");
+    comandoAT("AT+CWMODE=1\r\n"); // modo softap
+    comandoAT("AT+CIPMUX=0\r\n"); // conexion simple
+    comandoAT("AT+CWJAP=\"SSID\",\"PSWD\"\r\n");
+    comandoAT("AT+CIFSR\r\n"); // optener ip local  
+    comandoAT("AT+CIPSTART=\"TCP\",\"IP\",PUERTO\r\n");
+    // El maximo de ethernet 1500
+    comandoAT("AT+CIPSEND=4\r\n"); // cantidad de bytes a mandar el max es 2048
+    
+    comandoAT("HOLA");
     
     // Habilitacion de perifericos
     // Habilitar TIMER3

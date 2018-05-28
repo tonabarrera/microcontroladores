@@ -73,3 +73,5 @@ Utilizaremos los canales simples
 ADCON2 = 0x6000
 Tiempo total de conversion es: SAMC + tiempo conversion
 
+LDAC.- Sirve para controlar la carga
+SPI.- Son dos registros conectados de forma circular

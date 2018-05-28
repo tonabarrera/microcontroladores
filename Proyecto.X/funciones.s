@@ -1,36 +1,23 @@
         .include "p30F4013.inc"
 
 	.global __U2RXInterrupt
-	.global _enviarAT
-	
-	.EQU	RS_AT,	    RD1
-	.EQU	E_AT,	    RD2
-	
-_datoAT:
-    BSET    PORTD,	#RS_AT
-    NOP
-    BCLR    PORTD,	#RW_AT
-    NOP
-    BSET    PORTD,	#E_AT
-    NOP
-    MOV   WREG,	U2TXREG ; MANDAMOS EL COMANDO O DATO
-    NOP
-    BCLR    PORTD,	#E_AT
-    NOP
+	.global _comandoAT
     
-    RETURN
-    
-_enviarAT:
+_comandoAT:
     PUSH    W1 ; NO ESTOY SEGURO DE ESTA PARTE
     MOV	    W0,	    W1
+OTRO_CICLO:
     CLR	    W0
-RECORRER:
     MOV.B   [W1++], W0
     ; PREGUNTAR POR CERO
     CP0.B   W0
-    BRA Z, SALIR
-    CALL    _datoAT
-    GOTO    RECORRER
+    BRA	    Z,	    SALIR
+    BCLR    IFS1,   #U2TXIF
+    MOV	    W0,	    U2TXREG
+CICLO:
+    BTSS IFS1, #1 ; SI ES UNO BRINCA
+    GOTO CICLO
+    GOTO OTRO_CICLO
 SALIR:
     POP	    W1
     RETURN
