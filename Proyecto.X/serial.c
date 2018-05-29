@@ -18,12 +18,11 @@ int main() {
 
     fd_serie = config_serial( "/dev/ttyUSB0", B115200);
     printf("serial abierto con descriptor: %d\n", fd_serie);
-    int cont = 0;
     printf("%s\n", "Leyendo...");
     while (EVER) {
         dato = 0;
         read(fd_serie, &dato, 1);
-        printf("%s\n", dato);
+        printf("%c ", dato);
     }
     printf("%s\n", "TERMINO");
     

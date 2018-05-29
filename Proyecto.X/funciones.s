@@ -4,22 +4,20 @@
 	.global _comandoAT
     
 _comandoAT:
-    PUSH    W1 ; NO ESTOY SEGURO DE ESTA PARTE
     MOV	    W0,	    W1
 OTRO_CICLO:
-    CLR	    W0
+    CLR	    W0 ; Duda
     MOV.B   [W1++], W0
-    ; PREGUNTAR POR CERO
-    CP0.B   W0
+    CP0   W0 ; CP0
     BRA	    Z,	    SALIR
     BCLR    IFS1,   #U2TXIF
     MOV	    W0,	    U2TXREG
+    NOP
 CICLO:
-    BTSS IFS1, #1 ; SI ES UNO BRINCA
+    BTSS IFS1, #U2TXIF ; SI ES UNO BRINCA
     GOTO CICLO
     GOTO OTRO_CICLO
 SALIR:
-    POP	    W1
     RETURN
     
 ;__T3Interrupt:
@@ -33,7 +31,8 @@ __U2RXInterrupt:
     PUSH W0
     
     MOV U2RXREG, W0
-    MOV W0, U1TXREG
+    MOV W0,	U1TXREG
+    NOP
 
     BCLR    IFS1,   #U2RXIF
     POP	    W0

@@ -6,8 +6,8 @@
 #include <unistd.h>
 
 #define PUERTO "7200"
-#define BACKLOG 10 // Peticiones pendientes
-#define TAM_BUFFER 4
+#define BACKLOG 100 // Peticiones pendientes
+#define TAM_BUFFER 1
 
 // Obtiene la direccion IPv4 o IPv6
 void *get_in_addr(struct sockaddr *sa) {

@@ -13,7 +13,6 @@ _RETARDO_1S:
 	
 	MOV	#10,	    W1
 CICLO2_1S:
-    
 	CLR	W0	
 CICLO1_1S:	
 	DEC	W0,	    W0
