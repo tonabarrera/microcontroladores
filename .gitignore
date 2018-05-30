@@ -15,7 +15,12 @@
 *.out
 *.o
 /serial
+/*/serial
+/*/server
 /SIGNAL.X/nbproject/private/
 /SIGNAL.X/build/default/
 /SIGNAL.X/dist/default/
 /Proyecto.X/nbproject/private/
+/WiFi.X/nbproject/private/
+/WiFi.X/build/default/
+/WiFi.X/dist/default/
