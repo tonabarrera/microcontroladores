@@ -264,6 +264,6 @@ void iniPuertos( void ) {
     //TRISDbits.TRISD0 = 0;
     //Nop();
     
-    //ADPCFG = 0XFFFF;  // Deshabilitar el modo analogico
-    //Nop();
+    ADPCFG = 0XFFFF;  // Deshabilitar el modo analogico
+    Nop();
 }

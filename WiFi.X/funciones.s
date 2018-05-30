@@ -1,6 +1,5 @@
         .include "p30F4013.inc"
 
-	.global __U2RXInterrupt
 	.global _comandoAT
     
 _comandoAT:

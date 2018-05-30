@@ -81,6 +81,8 @@ int y_input[MUESTRAS] __attribute__ ((space(ymemory)));
 int var1 __attribute__ ((near));
 
 void iniPuertos( void );
+void iniWIFI(void);
+void configWIFI(void);
 void iniInterrupciones( void );
 void RETARDO_1S(void);
 void comandoAT(char []); // Talvez es unsigned
@@ -89,9 +91,9 @@ int main (void) {
     iniPuertos();
     
     // TIMER3 fT3IF = 512 Hz con FCY, la preescala es 1 (PENDIENTE)
-    //T3CON = 0;
-    //PR3 = 0;
-    //TMR3 = 0;
+    T3CON = 0x0000;
+    PR3 = 3600;
+    TMR3 = 0;
     
     // UART1 baudios = 115200 (PENDIENTE)
     U1MODE = 0x0420;
@@ -103,11 +105,21 @@ int main (void) {
     U2STA = 0x8000;
     U2BRG = 0;
     
+    // ADC
+    ADCON1 = 0x0044;
+    ADCON2 = 0x0000; //0x6000 referencias externas
+    ADCON3 = 0x0F02;
+    ADCHS = 2;
+    ADPCFG = 0xFFF8;
+    ADCSSL = 0;
+    
     iniInterrupciones();
     
     // Habilitacion de perifericos
+    
     // Habilitar TIMER3
-    //T3CONbits.TON = 1;
+    T3CONbits.TON = 1;
+    
     // Habilitar UART2
     U2MODEbits.UARTEN = 1;
     U2STAbits.UTXEN = 1;
@@ -116,35 +128,24 @@ int main (void) {
     U1MODEbits.UARTEN = 1;
     U1STAbits.UTXEN = 1;
     
+    // Habilitar ADC
+    ADCON1bits.ADON = 1;
+    
     // INICIALIZAR WIFI
-    PORTBbits.RB8 = 1;
-    Nop();
-    
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-
-    
-    PORTDbits.RD1 = 1;
-    Nop();
-    
-    RETARDO_1S();
-    
-    PORTDbits.RD1 = 0;
-    Nop();
-    
-    RETARDO_1S();
-    RETARDO_1S();
-
-    
-    PORTDbits.RD1 = 1;
-    Nop();
-    
-    RETARDO_1S();
-    RETARDO_1S();
+    iniWIFI();
     
     // CONFIGURAR WIFI
+    configWIFI();
+    
+    for(;EVER;) {
+        Nop();
+    }
+    
+    /*---------------------FIN VERSION 2---------------------*/
+    return 0;
+}
+
+void configWIFI(void) {
     comandoAT("AT+RST\r\n");
     RETARDO_1S();
     RETARDO_1S();
@@ -181,16 +182,37 @@ int main (void) {
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
-    
-    comandoAT("HOLA");
-    
-    for(;EVER;) {
-        Nop();
-    }
-    
-    /*---------------------FIN VERSION 2---------------------*/
-    return 0;
 }
+
+void iniWIFI(void) {
+    PORTBbits.RB8 = 1;
+    Nop();
+    
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+
+    
+    PORTDbits.RD1 = 1;
+    Nop();
+    
+    RETARDO_1S();
+    
+    PORTDbits.RD1 = 0;
+    Nop();
+    
+    RETARDO_1S();
+    RETARDO_1S();
+
+    
+    PORTDbits.RD1 = 1;
+    Nop();
+    
+    RETARDO_1S();
+    RETARDO_1S();
+}
+
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LAS INTERRPCIONES    				*/
 /* PARAMETROS: NINGUNO                                                      */
@@ -198,8 +220,11 @@ int main (void) {
 /****************************************************************************/
 void iniInterrupciones( void ) {
     // TIMER 3
-    //IFS0bits.T3IF = 0;
-    //IEC0bits.T3IE = 1;
+    IFS0bits.T3IF = 0;
+    IEC0bits.T3IE = 1;
+    // ADC
+    IFS0bits.ADIF = 0;
+    IEC0bits.ADIE = 1;
     // UART2
     IFS1bits.U2RXIF = 0;
     IEC1bits.U2RXIE = 1;
@@ -230,7 +255,7 @@ void iniPuertos( void ) {
     LATF = 0;
     Nop();
     
-    // CONFIGURACION DEL UART1
+    // UART1
     // Tx
     TRISCbits.TRISC13 = 0;
     Nop();
@@ -239,7 +264,7 @@ void iniPuertos( void ) {
     TRISCbits.TRISC14 = 1;
     Nop();
     
-    //CONFIGURACION DEL UART2 (WIFI)
+    // UART2 (WIFI)
     // Tx
     TRISFbits.TRISF5 = 1;
     Nop();
@@ -257,13 +282,14 @@ void iniPuertos( void ) {
     Nop();
     
     // TIMER 3 de prueba
-    //PORTDbits.RD0 = 0;
-    //Nop();
-    //LATDbits.LATD0 = 0;
-    //Nop();
-    //TRISDbits.TRISD0 = 0;
-    //Nop();
+    TRISDbits.TRISD0 = 0;
+    Nop();
     
-    //ADPCFG = 0XFFFF;  // Deshabilitar el modo analogico
-    //Nop();
+    // ADC
+    TRISBbits.TRISB0 = 1;
+    Nop();
+    TRISBbits.TRISB1 = 1;
+    Nop();
+    TRISBbits.TRISB2 = 1;
+    Nop();
 }
