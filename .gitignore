@@ -16,7 +16,9 @@
 *.o
 /serial
 /*/serial
-/*/server
+/*/servidor
+/*/cliente
+/*/client
 /SIGNAL.X/nbproject/private/
 /SIGNAL.X/build/default/
 /SIGNAL.X/dist/default/

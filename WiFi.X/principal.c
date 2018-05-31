@@ -81,9 +81,11 @@ int y_input[MUESTRAS] __attribute__ ((space(ymemory)));
 int var1 __attribute__ ((near));
 
 void iniPuertos( void );
+void iniWIFI(void);
+void configWIFI(void);
 void iniInterrupciones( void );
 void RETARDO_1S(void);
-void comandoAT(char []); // Talvez es unsigned
+void comandoAT(unsigned char []); // Talvez es unsigned
 
 int main (void) {
     iniPuertos();
@@ -117,6 +119,61 @@ int main (void) {
     U1STAbits.UTXEN = 1;
     
     // INICIALIZAR WIFI
+    iniWIFI();
+    
+    // CONFIGURAR WIFI
+    configWIFI();
+    
+    comandoAT("HOLA");
+    
+    for(;EVER;) {
+        Nop();
+    }
+    
+    /*---------------------FIN VERSION 2---------------------*/
+    return 0;
+}
+
+void configWIFI(void) {
+    comandoAT("AT+RST\r\n");
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    comandoAT("AT+CWMODE=3\r\n"); // modo softap
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    comandoAT("AT+CIPMUX=0\r\n"); // conexion simple
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    comandoAT("AT+CWJAP=\"Tenda_06DEC0\",\"MqZe5RY4\"\r\n");
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    comandoAT("AT+CIFSR\r\n"); // optener ip local  
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    comandoAT("AT+CIPSTART=\"TCP\",\"192.168.0.117\",7200\r\n");
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    // El maximo de ethernet 1500
+    comandoAT("AT+CIPSEND=4\r\n"); // cantidad de bytes a mandar el max es 2048
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+}
+
+void iniWIFI(void) {
     PORTBbits.RB8 = 1;
     Nop();
     
@@ -143,54 +200,8 @@ int main (void) {
     
     RETARDO_1S();
     RETARDO_1S();
-    
-    // CONFIGURAR WIFI
-    comandoAT("AT+RST\r\n");
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    comandoAT("AT+CWMODE=3\r\n"); // modo softap
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    comandoAT("AT+CIPMUX=0\r\n"); // conexion simple
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    comandoAT("AT+CWJAP=\"SUPER\",\"madremiawilly\"\r\n");
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    comandoAT("AT+CIFSR\r\n"); // optener ip local  
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    comandoAT("AT+CIPSTART=\"TCP\",\"192.168.43.42\",7200\r\n");
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    // El maximo de ethernet 1500
-    comandoAT("AT+CIPSEND=4\r\n"); // cantidad de bytes a mandar el max es 2048
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    
-    comandoAT("HOLA");
-    
-    for(;EVER;) {
-        Nop();
-    }
-    
-    /*---------------------FIN VERSION 2---------------------*/
-    return 0;
 }
+
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LAS INTERRPCIONES    				*/
 /* PARAMETROS: NINGUNO                                                      */
