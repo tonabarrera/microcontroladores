@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-#define PORT 7200
+#define PORT 8000
 
 int main(int argc, char const *argv[]) {
     int sock = 0;
@@ -21,7 +21,7 @@ int main(int argc, char const *argv[]) {
     serv_addr.sin_port = htons(PORT);
       
     // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) 
+    if(inet_pton(AF_INET, "10.100.75.206", &serv_addr.sin_addr)<=0) 
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
@@ -29,7 +29,7 @@ int main(int argc, char const *argv[]) {
   
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        printf("\nConnection Failed \n");
+        printf("No me conecte\n");
         return -1;
     }
     write(sock , hello , strlen(hello));
