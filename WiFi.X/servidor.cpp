@@ -4,8 +4,6 @@
 #include <iostream>
 #include <arpa/inet.h>
 
-using namespace std;
-
 #define PUERTO "7200"
 #define BACKLOG 100 // Peticiones pendientes
 #define TAM_BUFFER 4
@@ -76,7 +74,7 @@ int main(int argc, char const *argv[]) {
 
     while (true) {
         sin_size = sizeof(cliente_addr);
-        cout << "ESPERANDO..." << endl;
+        printf("%s\n", "Esperando...");
         cliente_fd = accept(servidor_fd, (struct sockaddr *)&cliente_addr, &sin_size);
         if (cliente_fd == -1) {
             perror("accept");
@@ -84,10 +82,10 @@ int main(int argc, char const *argv[]) {
         }
 
         inet_ntop(AF_INET, &(((struct sockaddr_in *)&cliente_addr)->sin_addr), s, INET_ADDRSTRLEN);
-        cout << "Conexion desde: " << s << endl;
+        printf("%s %s\n", "Conexicon desde: ", s);
         memset(&s, 0, INET_ADDRSTRLEN);
         num_bytes = read(cliente_fd, buffer, TAM_BUFFER);
-        cout << "LEIDOS: " << num_bytes << " BUFFER: " << buffer << endl;
+        printf("%s %d %s %s\n", "LEIDOS", num_bytes,"BUFFER", buffer);
         close(cliente_fd);
     }
 

@@ -177,7 +177,7 @@ void configWIFI(void) {
     RETARDO_1S();
     RETARDO_1S();
     // El maximo de ethernet 1500
-    comandoAT("AT+CIPSEND=4\r\n"); // cantidad de bytes a mandar el max es 2048
+    comandoAT("AT+CIPSEND=2048\r\n"); // cantidad de bytes a mandar el max es 2048
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();

@@ -1,14 +1,16 @@
 #include <netdb.h>
 #include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <fstream>
 #include <unistd.h>
-#include <iostream>
 #include <arpa/inet.h>
 
 using namespace std;
 
 #define PUERTO "7200"
 #define BACKLOG 100 // Peticiones pendientes
-#define TAM_BUFFER 1024
+#define TAM_BUFFER 2048
 
 // Obtiene la direccion IPv4 o IPv6
 void *get_in_addr(struct sockaddr *sa) {
@@ -73,10 +75,10 @@ int main(int argc, char const *argv[]) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
-
+    unsigned short dato = 0;
     while (true) {
         sin_size = sizeof(cliente_addr);
-        cout << "ESPERANDO..." << endl;
+        printf("%s\n", "Esperando...");
         cliente_fd = accept(servidor_fd, (struct sockaddr *)&cliente_addr, &sin_size);
         if (cliente_fd == -1) {
             perror("accept");
@@ -84,10 +86,27 @@ int main(int argc, char const *argv[]) {
         }
 
         inet_ntop(AF_INET, &(((struct sockaddr_in *)&cliente_addr)->sin_addr), s, INET_ADDRSTRLEN);
-        cout << "Conexion desde: " << s << endl;
+        printf("%s %s\n", "Conexion desde: ", s);
         memset(&s, 0, INET_ADDRSTRLEN);
         num_bytes = read(cliente_fd, buffer, TAM_BUFFER);
-        cout << "LEIDOS: " << num_bytes << " BUFFER: " << buffer << endl;
+        printf("%s %d %s %s\n", "Leidos: ", num_bytes, "buffer: ", buffer);
+        if (num_bytes) {
+            ofstream archivo("muestras.txt");
+            if (archivo.is_open()) {
+                printf("%s\n", "Archivo abierto!");
+                for (int i = 0; i < TAM_BUFFER; i++) {
+                    printf("%x %x\n", buffer[i], dato);
+                    if (buffer[i] & 0x0080) {
+                        dato |= (buffer[i] & 0x003F) << 6;
+                        archivo << dato << endl;
+                        dato = 0;
+                    } else
+                        dato = buffer[i];
+                }
+                archivo.close();
+                printf("%s\n", "Archivo cerrado!");
+            }
+        }
         close(cliente_fd);
     }
 
