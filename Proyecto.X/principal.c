@@ -146,6 +146,11 @@ int main (void) {
 }
 
 void configWIFI(void) {
+    comandoAT("ATE0\r\n");
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
+    RETARDO_1S();
     comandoAT("AT+RST\r\n");
     RETARDO_1S();
     RETARDO_1S();
@@ -161,7 +166,7 @@ void configWIFI(void) {
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
-    comandoAT("AT+CWJAP=\"SUPER\",\"madremiawilly\"\r\n");
+    comandoAT("AT+CWJAP=\"Tenda_06DEC0\",\"MqZe5RY4\"\r\n");
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
@@ -171,7 +176,7 @@ void configWIFI(void) {
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
-    comandoAT("AT+CIPSTART=\"TCP\",\"192.168.43.42\",7200\r\n");
+    comandoAT("AT+CIPSTART=\"TCP\",\"192.168.0.117\",7200\r\n");
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();

@@ -4,14 +4,14 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>DAC</name>
-            <creation-uuid>ce4e68a0-5f59-4610-9230-c45b27cd2ae0</creation-uuid>
+            <creation-uuid>cf552622-1476-4789-b18b-5f2fb8bee268</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions>c</c-extensions>
+            <c-extensions/>
             <cpp-extensions/>
-            <header-extensions>h</header-extensions>
-            <asminc-extensions>inc</asminc-extensions>
-            <sourceEncoding>ISO-8859-1</sourceEncoding>
+            <header-extensions/>
+            <asminc-extensions/>
             <make-dep-projects/>
+            <sourceEncoding>ISO-8859-1</sourceEncoding>
         </data>
     </configuration>
 </project>
