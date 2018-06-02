@@ -82,11 +82,23 @@ int var1 __attribute__ ((near));
 
 void iniPuertos( void );
 void iniInterrupciones( void );
+void WR_DAC(unsigned char);
+
+unsigned char cont;
 
 int main (void) {
     iniPuertos();
     
+    SPI1STAT = 0;
+    SPI1CON = 0X053F;
+    
+    SPI1STATbits.SPIEN = 1;
+    
+    cont = 0;
+    
     for(;EVER;) {
+        WR_DAC(cont);
+        cont++;
         Nop();
     }
     
@@ -123,15 +135,16 @@ void iniPuertos( void ) {
     LATF = 0;
     Nop();
     
+    // CS
     TRISAbits.TRISA11 = 0;
     Nop();
-    
+    // LDAC
     TRISDbits.TRISD0 = 0;
     Nop();
-    
+    // SDI
     TRISFbits.TRISF3 = 0;
     Nop();
-    
+    // SCK
     TRISFbits.TRISF6 = 0;
     Nop();
 }
