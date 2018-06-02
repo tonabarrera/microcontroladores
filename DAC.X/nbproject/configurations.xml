@@ -17,6 +17,7 @@
                    projectFiles="true">
       <itemPath>funciones.s</itemPath>
       <itemPath>principal.c</itemPath>
+      <itemPath>interrupciones.s</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

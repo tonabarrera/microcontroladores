@@ -6,12 +6,12 @@
             <name>DAC</name>
             <creation-uuid>cf552622-1476-4789-b18b-5f2fb8bee268</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions/>
-            <header-extensions/>
-            <asminc-extensions/>
-            <make-dep-projects/>
+            <header-extensions>h</header-extensions>
+            <asminc-extensions>inc</asminc-extensions>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
+            <make-dep-projects/>
         </data>
     </configuration>
 </project>
