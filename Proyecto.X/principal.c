@@ -116,26 +116,25 @@ int main (void) {
     iniInterrupciones();
     
     // Habilitacion de perifericos
-    
-    // Habilitar TIMER3
-    T3CONbits.TON = 1;
-    
-    // Habilitar UART2
-    U2MODEbits.UARTEN = 1;
-    U2STAbits.UTXEN = 1;
-    
      // Habilitar UART1
     U1MODEbits.UARTEN = 1;
     U1STAbits.UTXEN = 1;
     
-    // Habilitar ADC
-    ADCON1bits.ADON = 1;
+    // Habilitar UART2
+    U2MODEbits.UARTEN = 1;
+    U2STAbits.UTXEN = 1;
     
     // INICIALIZAR WIFI
     iniWIFI();
     
     // CONFIGURAR WIFI
     configWIFI();
+    // Mas habilitacion de perifiericos
+    // Habilitar TIMER3
+    T3CONbits.TON = 1;
+    
+    // Habilitar ADC
+    ADCON1bits.ADON = 1;
     
     for(;EVER;) {
         Nop();
@@ -146,17 +145,14 @@ int main (void) {
 }
 
 void configWIFI(void) {
-    comandoAT("ATE0\r\n");
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
-    RETARDO_1S();
     comandoAT("AT+RST\r\n");
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
-    comandoAT("AT+CWMODE=3\r\n"); // modo softap
+    RETARDO_1S();
+    comandoAT("AT+CWMODE=1\r\n"); // modo softap
+    RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
@@ -166,7 +162,9 @@ void configWIFI(void) {
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
+    RETARDO_1S();
     comandoAT("AT+CWJAP=\"Tenda_06DEC0\",\"MqZe5RY4\"\r\n");
+    RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
@@ -176,13 +174,16 @@ void configWIFI(void) {
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
+    RETARDO_1S();
     comandoAT("AT+CIPSTART=\"TCP\",\"192.168.0.117\",7200\r\n");
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
+    RETARDO_1S();
     // El maximo de ethernet 1500
-    comandoAT("AT+CIPSEND=2048\r\n"); // cantidad de bytes a mandar el max es 2048
+    comandoAT("AT+CIPSEND=1024\r\n"); // cantidad de bytes a mandar el max es 2048
+    RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
     RETARDO_1S();
@@ -224,15 +225,15 @@ void iniWIFI(void) {
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
 void iniInterrupciones( void ) {
+    // UART2
+    IFS1bits.U2RXIF = 0;
+    IEC1bits.U2RXIE = 1;
     // TIMER 3
     IFS0bits.T3IF = 0;
     IEC0bits.T3IE = 1;
     // ADC
     IFS0bits.ADIF = 0;
     IEC0bits.ADIE = 1;
-    // UART2
-    IFS1bits.U2RXIF = 0;
-    IEC1bits.U2RXIE = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PUERTOS						*/

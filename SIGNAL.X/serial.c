@@ -26,7 +26,7 @@ int main() {
         if (dato & 0x0080)
             muestras[cont++] |= (dato & 0x003F) << 6;
         else
-            muestras[cont] = dato;
+            muestras[cont] = (dato & 0x003F);
     }
     FILE *file = fopen("muestras.txt", "w");
     for (int i = 0; i < cont; i++)

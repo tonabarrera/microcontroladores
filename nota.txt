@@ -73,6 +73,19 @@ Utilizaremos los canales simples
 ADCON2 = 0x6000
 Tiempo total de conversion es: SAMC + tiempo conversion
 
+
+I2C
+Trabaja en orden de los khz
+para dispositivos de baja velocidad y pocas terminales
+
+
 LDAC.- Sirve para controlar la carga
 SPI.- Son dos registros conectados de forma circular
 Nuestro DAC es de tipo A
+SCL = reloj
+SDA = configuracion
+0=escritura
+1=lectura
+Es una interfaz para trabajar a cortas distancias
+
+

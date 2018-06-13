@@ -40,10 +40,10 @@ __ADCInterrupt:
     AND	    #0x003F, W0 ; PARTE BAJA EN W0
     LSR	    W1,	    #6,	    W1 ; PARTE ALTA EN W1
     BSET    W1,	    #7
-    BCLR    W0,	    #7
     MOV	    W0,	    U2TXREG ; PRIMERO SE MANDA LA PARTE BAJA
     NOP
     MOV	    W1,	    U2TXREG ; LUEGO LA PARTE ALTA
+    NOP
     BCLR    IFS0,   #ADIF
     
     POP W1

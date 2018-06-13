@@ -10,7 +10,7 @@ using namespace std;
 
 #define PUERTO "7200"
 #define BACKLOG 100 // Peticiones pendientes
-#define TAM_BUFFER 2048
+#define TAM_BUFFER 1024
 
 // Obtiene la direccion IPv4 o IPv6
 void *get_in_addr(struct sockaddr *sa) {
@@ -91,17 +91,16 @@ int main(int argc, char const *argv[]) {
         num_bytes = read(cliente_fd, buffer, TAM_BUFFER);
         printf("%s %d %s %s\n", "Leidos: ", num_bytes, "buffer: ", buffer);
         if (num_bytes) {
-            ofstream archivo("muestras.txt");
+            ofstream archivo("muestras2.txt");
             if (archivo.is_open()) {
                 printf("%s\n", "Archivo abierto!");
                 for (int i = 0; i < TAM_BUFFER; i++) {
-                    printf("%x %x\n", buffer[i], dato);
                     if (buffer[i] & 0x0080) {
                         dato |= (buffer[i] & 0x003F) << 6;
-                        archivo << dato << endl;
+                        archivo << (3.3 * dato) /4095 << endl;
                         dato = 0;
                     } else
-                        dato = buffer[i];
+                        dato = buffer[i] & 0x3F;
                 }
                 archivo.close();
                 printf("%s\n", "Archivo cerrado!");

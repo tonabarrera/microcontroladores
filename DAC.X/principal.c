@@ -84,14 +84,20 @@ void iniPuertos( void );
 void iniInterrupciones( void );
 void WR_DAC(unsigned char);
 
+// Se mandan a la frecuencia de muestreo
+// Const lo pone en la memoria flash (de programa) y ya no se cambias
+const unsigned short seno [] {
+    // datos chidos
+};
+
 unsigned char cont;
 
 int main (void) {
     iniPuertos();
-    
+    // Configurar SPI
     SPI1STAT = 0;
     SPI1CON = 0X053F;
-    
+    // Habilitar SPI
     SPI1STATbits.SPIEN = 1;
     
     cont = 0;
