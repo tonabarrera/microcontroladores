@@ -84,7 +84,6 @@ void iniPuertos( void );
 void iniInterrupciones( void );
 void WR_DAC(unsigned char);
 
-unsigned char func;
 
 // Se mandan a la frecuencia de muestreo
 // Const lo pone en la memoria flash (de programa) y ya no se cambias
@@ -92,42 +91,32 @@ const unsigned short seno [] ={
     // datos chidos
 };
 
-unsigned char cont;
 
 int main (void) {
     iniPuertos();
+    
+    // TIMER3 fT1IF = 512 Hz con FCY, la preescala es 1
+    T3CON = 0x0000;
+    PR3 = 3600;
+    TMR3 = 0;
+    
+    // TIMER1 fT1IF = 512 Hz con FCY, la preescala es 1
+    T1CON = 0x0000;
+    PR1 = 3600;
+    TMR1 = 0;
+    
     // Configurar SPI
     SPI1STAT = 0;
     SPI1CON = 0X053F;
     // Habilitar SPI
     SPI1STATbits.SPIEN = 1;
     
-    cont = 0;
-    func = 0;
     
+    T1CONbits.TON = 1;
+    T3CONbits.TON = 1;
+
     for(;EVER;) {
-        // Sierra
-        if(PORTDbits.RD1 == 0){
-            func = 0;
-            WR_DAC(cont);
-            cont++;
-        // Triangular
-        }else {
-            if(cont==4095 && func==0){
-                func = 1;
-            }
-            if(cont==0 && func==1) {
-                func = 0;
-            }
-            if(func == 0){
-                cont++;
-                WR_DAC(cont);
-            }
-            else {
-                cont--;
-                WR_DAC(cont);
-            }
-        }
+        Nop();
     }
     
     /*---------------------FIN VERSION 2---------------------*/
@@ -140,7 +129,10 @@ int main (void) {
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
 void iniInterrupciones( void ) {
-
+    IFS0bits.T3IF = 0;
+    IEC0bits.T3IE = 1;
+    IFS0bits.T1IF = 0;
+    IEC0bits.T1IE = 1;
 }
 /****************************************************************************/
 /* DESCRICION:	ESTA RUTINA INICIALIZA LOS PUERTOS						*/
@@ -161,10 +153,6 @@ void iniPuertos( void ) {
     PORTF = 0;
     Nop();
     LATF = 0;
-    Nop();
-    
-    // Entradas
-    TRISDbits.TRISD1 = 1;
     Nop();
     
     // CS

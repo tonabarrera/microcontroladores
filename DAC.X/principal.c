@@ -82,9 +82,8 @@ int var1 __attribute__ ((near));
 
 void iniPuertos( void );
 void iniInterrupciones( void );
-void WR_DAC(unsigned char);
+void WR_DAC(int);
 
-unsigned char func;
 
 // Se mandan a la frecuencia de muestreo
 // Const lo pone en la memoria flash (de programa) y ya no se cambias
@@ -92,7 +91,8 @@ const unsigned short seno [] ={
     // datos chidos
 };
 
-unsigned char cont;
+int cont;
+unsigned char func;
 
 int main (void) {
     iniPuertos();

@@ -1,17 +1,16 @@
         .include "p30F4013.inc"
 
-	.global __U2RXInterrupt
-	
-		
-__U2RXInterrupt:
+	.global __T3Interrupt
+	.global __T1Interrupt
+
+__T1Interrupt:
     PUSH W0
     
-    MOV U2RXREG, W0
-    MOV W0,	U1TXREG
-    NOP
-
-    BCLR    IFS1,   #U2RXIF
-    POP	    W0
+    RETFIE
+		
+__T3Interrupt:
+    PUSH W0
+    
     RETFIE
     
     
