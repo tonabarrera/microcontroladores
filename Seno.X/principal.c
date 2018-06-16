@@ -88,22 +88,38 @@ void WR_DAC(unsigned char);
 // Se mandan a la frecuencia de muestreo
 // Const lo pone en la memoria flash (de programa) y ya no se cambias
 const unsigned short seno [] ={
-    // datos chidos
+    2048, 3496, 4095, 3496, 2048, 600, 0, 600 
 };
+
+void configDSP( unsigned short seno[] );
 
 
 int main (void) {
     iniPuertos();
-    
-    // TIMER3 fT1IF = 512 Hz con FCY, la preescala es 1
-    T3CON = 0x0000;
-    PR3 = 3600;
-    TMR3 = 0;
-    
-    // TIMER1 fT1IF = 512 Hz con FCY, la preescala es 1
-    T1CON = 0x0000;
-    PR1 = 3600;
+    /*
+     * Configurar Timer 1
+     * Generar la frecuencia del filtro MAX295
+     * f = 1khz
+     * fs = 8khz
+     * fc = 1152 hz para recuperar la componente fundamental
+     * FCLK = 50fc = 50*1152 = 57600
+     * FT1IF = FCLK * 2 = 115200
+     */
+    T1CON = 0x0002;
+    PR1 = 0x8000;
     TMR1 = 0;
+    /*
+     * Configurar Timer 3
+     * Generar la fs (frecuencia de muestreo)
+     * f = 1khz
+     * fs  8khz
+     * FT1IF = fs = 8khz
+     * cada vez que se genere una interrupcion se manda un dato hacia 
+     * el DAC
+     */
+    T3CON = 0x0002;
+    PR3 = 0x8000;
+    TMR3 = 0;
     
     // Configurar SPI
     SPI1STAT = 0;
@@ -112,8 +128,10 @@ int main (void) {
     SPI1STATbits.SPIEN = 1;
     
     
-    T1CONbits.TON = 1;
-    T3CONbits.TON = 1;
+    //T1CONbits.TON = 1;
+    //T3CONbits.TON = 1;
+    
+    configDSP( seno );
 
     for(;EVER;) {
         Nop();
@@ -131,6 +149,7 @@ int main (void) {
 void iniInterrupciones( void ) {
     IFS0bits.T3IF = 0;
     IEC0bits.T3IE = 1;
+    
     IFS0bits.T1IF = 0;
     IEC0bits.T1IE = 1;
 }

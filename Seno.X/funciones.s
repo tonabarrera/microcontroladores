@@ -2,10 +2,31 @@
 
         .global _RD_WR_SPI
 	.global _WR_DAC
+	.global _configDSP
+	.global	_seno
 	
 	.EQU	CS_DAC,	    RA11
 	.EQU	LDAC,	    RD0
-	
+
+/** @brief SE ACTIVA EL PSV Y SE COLOCA W1 COMO APUNTADOR
+; * CONFIGURACION DEL MODO DE DIRECCIONAMIENTO CIRCULAR
+; * W1 ES EL APUNTADOR DEL BUFFER CIRCULAR
+; * @PARAM:
+; */
+_configDSP:
+    BSET    CORCON, #PSV
+    MOV	    #psvpage(_seno),	W0
+    MOV	    W0,	    PSVPAG
+    MOV	    #psvoffset(_seno),	W1
+    
+    MOV	    W1,	    XMODSRT
+    MOV	    #64*2-1,	    W2  ;#MUESTRAS*2-1
+    ADD	    W2,	    W1,	    W2
+    MOV	    W2,	    XMODEND
+    MOV	    #0X8001, W0
+    MOV	    W0,	    MODCON
+    RETURN
+    
 /** @brief 
 ; * @PARAM:
 ; */

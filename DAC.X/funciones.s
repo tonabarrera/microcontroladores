@@ -15,7 +15,6 @@ _RD_WR_SPI:
 CICLO:
     BTSS IFS0,	#SPI1IF ; Pendiente
     GOTO CICLO
-    MOV	W0,	SPI1BUF
     MOV	SPI1BUF, W0
 
     RETURN
@@ -34,7 +33,7 @@ _WR_DAC:
     CALL _RD_WR_SPI
     BSET PORTA,	    #CS_DAC
     NOP
-    BSET PORTD,	    #LDAC
+    BCLR PORTD,	    #LDAC
     NOP
     BSET PORTD,	    #LDAC
     NOP

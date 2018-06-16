@@ -4,13 +4,16 @@
 	.global __T1Interrupt
 
 __T1Interrupt:
-    PUSH W0
-    
+    BTG	    LATD,   #LATD0
+    NOP
+    BCLR    IFS0    ,	#T1IF
     RETFIE
 		
 __T3Interrupt:
-    PUSH W0
-    
+    MOV	    [W1++], W0
+    CALL    _WR_DAC
+    NOP
+    BCLR    IFS0    ,	#T3IF
     RETFIE
     
     

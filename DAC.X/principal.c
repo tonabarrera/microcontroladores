@@ -80,25 +80,19 @@ int y_input[MUESTRAS] __attribute__ ((space(ymemory)));
 /********************************************************************************/
 int var1 __attribute__ ((near));
 
-void iniPuertos( void );
+void iniPerifericos( void );
 void iniInterrupciones( void );
 void WR_DAC(int);
-
-
-// Se mandan a la frecuencia de muestreo
-// Const lo pone en la memoria flash (de programa) y ya no se cambias
-const unsigned short seno [] ={
-    // datos chidos
-};
-
 int cont;
 unsigned char func;
 
 int main (void) {
-    iniPuertos();
+    iniPerifericos();
     // Configurar SPI
     SPI1STAT = 0;
+    Nop();
     SPI1CON = 0X053F;
+    Nop();
     // Habilitar SPI
     SPI1STATbits.SPIEN = 1;
     
@@ -147,10 +141,10 @@ void iniInterrupciones( void ) {
 /* PARAMETROS: NINGUNO                                                      */
 /* RETORNO: NINGUNO															*/
 /****************************************************************************/
-void iniPuertos( void ) {
+void iniPerifericos(void ) {
     PORTA = 0;
     Nop();
-    LATB = 0;
+    LATA = 0;
     Nop();
     
     PORTD = 0;
@@ -178,5 +172,8 @@ void iniPuertos( void ) {
     Nop();
     // SCK
     TRISFbits.TRISF6 = 0;
+    Nop();
+    
+    ADPCFG = 0xFFFF;
     Nop();
 }
